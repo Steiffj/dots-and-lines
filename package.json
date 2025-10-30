@@ -9,7 +9,27 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/chroma-js": "^3.1.2",
+    "graphology-types": "^0.24.8",
     "typescript": "~5.9.3",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "vitest": "^4.0.5"
+  },
+  "dependencies": {
+    "@fontsource/fira-mono": "^5.2.7",
+    "@sigma/edge-curve": "^3.1.0",
+    "@sigma/export-image": "^3.0.0",
+    "@sigma/layer-webgl": "^3.0.0",
+    "@sigma/node-border": "^3.0.0",
+    "@sigma/node-image": "^3.0.0",
+    "@sigma/node-square": "^3.0.0",
+    "@svgdotjs/svg.js": "^3.2.5",
+    "@tailwindcss/vite": "^4.1.16",
+    "chroma-js": "^3.1.2",
+    "graphology": "^0.26.0",
+    "konva": "^10.0.8",
+    "sigma": "^3.0.2",
+    "tailwindcss": "^4.1.16",
+    "twgl.js": "^7.0.0"
   }
 }
