@@ -1,24 +1,25 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+import {
+  registerDarkModeToggleHandler,
+  setupDarkModeToggle,
+} from "./dark-mode";
+import { createTestGraph } from "./data";
+import { setupSigma, sigmaDarkModeToggle } from "./sigma";
+import "./style.css";
+import "@fontsource/fira-mono";
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+export default (function init() {
+  const stage = document.getElementById("stage");
+  if (!stage) {
+    throw new Error(
+      "Stage element is not configured correctly. Looking for element with ID `stage`."
+    );
+  }
+  const graph = createTestGraph();
+  setupSigma(graph, stage, {
+    labelFont: "Fira Mono",
+    edgeLabelFont: "Fira Mono",
+  });
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+  setupDarkModeToggle();
+  registerDarkModeToggleHandler(sigmaDarkModeToggle);
+})();
