@@ -23,3 +23,6 @@
 - Layout options
     - Fix subgraphs in place
     - Only allow specified nodes to move
+- Write ForceAtlas2 layout preprocessor algorithm for nicer animation and fast convergence.
+- Color themes plus some generation
+    - Colorblind options.

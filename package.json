@@ -23,6 +23,7 @@
     "@sigma/node-border": "^3.0.0",
     "@sigma/node-image": "^3.0.0",
     "@sigma/node-square": "^3.0.0",
+    "@sigma/utils": "^3.0.0",
     "@svgdotjs/svg.js": "^3.2.5",
     "@tailwindcss/vite": "^4.1.16",
     "chroma-js": "^3.1.2",

@@ -12,7 +12,7 @@ export const nodeReducerCommon: PooledNodeReducer<
   display.hidden = data.hidden;
   display.highlighted = data.highlighted;
   display.label = data.label;
-  display.size = data.size;
+  display.size = data.size ?? 5;
   display.type = data.type;
   display.x = data.x;
   display.y = data.y;
