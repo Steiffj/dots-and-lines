@@ -12,7 +12,10 @@ import {
   EdgeReducerConductor,
   NodeReducerConductor,
 } from "./reducers/conductors";
-import { edgeReducerCommon } from "./reducers/edge-reducers";
+import {
+  edgePaletteReducer,
+  edgeReducerCommon,
+} from "./reducers/edge-reducers";
 import { nodeReducerCommon } from "./reducers/node-reducers";
 
 let host: HTMLElement;
@@ -71,6 +74,7 @@ export function setupSigma(
 
   const edgeConductor = new EdgeReducerConductor(sigma);
   edgeConductor.register(edgeReducerCommon);
+  edgeConductor.register(edgePaletteReducer);
 
   sigma.setSetting("nodeReducer", nodeConductor.reducer);
   sigma.setSetting("edgeReducer", edgeConductor.reducer);

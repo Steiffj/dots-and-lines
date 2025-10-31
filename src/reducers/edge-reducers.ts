@@ -27,3 +27,16 @@ export const BLUEducer: PooledEdgeReducer<NodeAttrs, EdgeAttrs, GraphAttrs> = (
   display.size = data.size ?? 1;
   return display;
 };
+
+export const edgePaletteReducer: PooledEdgeReducer<
+  NodeAttrs,
+  EdgeAttrs,
+  GraphAttrs
+> = (_, __, pooled, sigma) => {
+  let display = pooled ?? {};
+  const palette = sigma.getGraph().getAttribute("palette");
+  if (palette) {
+    display.color = palette.edge;
+  }
+  return display;
+};

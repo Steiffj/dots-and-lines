@@ -11,6 +11,7 @@
 - Monaco editor integration.
 - Read/edit data from filesystem.
     - Edit graph datasets with live reload.
+    - Save screenshot of the graph visualization with the serialized graph data.
 - Utilize WebGL layer for grouping?
 - Minimap?
 - Resizable split window
