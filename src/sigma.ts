@@ -12,8 +12,8 @@ import {
   EdgeReducerConductor,
   NodeReducerConductor,
 } from "./reducers/conductors";
-import { REDucer, nodeReducerCommon } from "./reducers/node-reducers";
-import { BLUEducer, edgeReducerCommon } from "./reducers/edge-reducers";
+import { edgeReducerCommon } from "./reducers/edge-reducers";
+import { nodeReducerCommon } from "./reducers/node-reducers";
 
 let host: HTMLElement;
 let sigma: Sigma<NodeAttrs, EdgeAttrs, GraphAttrs>;
@@ -68,11 +68,9 @@ export function setupSigma(
 
   const nodeConductor = new NodeReducerConductor(sigma);
   nodeConductor.register(nodeReducerCommon);
-  nodeConductor.register(REDucer);
 
   const edgeConductor = new EdgeReducerConductor(sigma);
   edgeConductor.register(edgeReducerCommon);
-  edgeConductor.register(BLUEducer);
 
   sigma.setSetting("nodeReducer", nodeConductor.reducer);
   sigma.setSetting("edgeReducer", edgeConductor.reducer);

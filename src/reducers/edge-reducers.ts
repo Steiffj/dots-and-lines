@@ -11,7 +11,7 @@ export const edgeReducerCommon: PooledEdgeReducer<
   display.forceLabel = data.forceLabel;
   display.hidden = data.hidden;
   display.label = data.label;
-  display.size = data.size;
+  display.size = data.size ?? 1;
   display.type = data.type;
   display.zIndex = data.zIndex;
   return display;
@@ -19,11 +19,11 @@ export const edgeReducerCommon: PooledEdgeReducer<
 
 export const BLUEducer: PooledEdgeReducer<NodeAttrs, EdgeAttrs, GraphAttrs> = (
   _,
-  __,
+  data,
   pooled
 ) => {
   let display = pooled ?? {};
   display.color = "blue";
-  display.size = 2;
+  display.size = data.size ?? 1;
   return display;
 };

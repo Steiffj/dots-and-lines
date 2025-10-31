@@ -1,4 +1,6 @@
 import Graph from "graphology";
+import clusters from "graphology-generators/random/clusters";
+import circlepack from "graphology-layout/circlepack";
 import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
 export type NodeAttrs = Partial<NodeDisplayData>;
@@ -19,9 +21,7 @@ export function graphDirectedLoops(): VisGraph {
 }
 
 export function createTestGraph() {
-  const graph = graphDirectedLoops();
-  graph.addNode("a", { x: 0, y: 0, size: 10, label: "Hello again!" });
-  graph.addNode("b", { x: 1, y: 0, size: 10, label: "Mk" });
-  graph.addEdge("a", "b", { type: "curve", size: 2 });
-  return graph;
+  const g = clusters(Graph, { order: 3500, size: 6000, clusters: 9 });
+  circlepack.assign(g, { hierarchyAttributes: ["cluster"] });
+  return g;
 }
