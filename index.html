@@ -9,15 +9,17 @@
   <body>
     <div class="relative overflow-hidden h-screen w-screen">
       <div class="absolute w-full h-full z-10 pointer-events-none">
-        <h1 class="absolute p-4 text-2xl pointer-events-auto dark:text-slate-50">Dots and Lines</h1>
+        <h1 class="absolute p-4 text-2xl pointer-events-auto text-stone-900 dark:text-stone-50">Dots and Lines</h1>
       </div>
-      <div id="stage" class="absolute w-full h-full transition-colors bg-slate-200 dark:bg-slate-900"></div>
+      <div id="stage" class="absolute w-full h-full transition-colors bg-slate-200 dark:bg-slate-950"></div>
     </div>
-    <script type="module" src="src/main.ts"></script>
-
+    
     <!-- Silly visualization theming setup  -->
-    <div id="vis-color-node-default" class="hidden bg-gray-700 dark:bg-gray-500"></div>
-    <div id="vis-color-edge-default" class="hidden bg-gray-400 dark:bg-gray-600"></div>
-    <div id="vis-color-text-default" class="hidden bg-slate-950 dark:bg-slate-50"></div>
+    <div id="vis-color-node-default" class="hidden bg-emerald-600 dark:bg-emerald-500"></div>
+    <div id="vis-color-edge-default" class="hidden bg-stone-500 dark:bg-stone-600"></div>
+    <div id="vis-color-text-default" class="hidden bg-stone-950 dark:bg-stone-50"></div>
+    <div id="vis-color-background" class="hidden bg-stone-200 dark:bg-stone-800"></div>
+
+    <script type="module" src="src/main.ts"></script>
   </body>
 </html>

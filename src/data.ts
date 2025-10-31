@@ -1,10 +1,14 @@
 import Graph from "graphology";
 import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 
-export type VisGraph = Graph<
-  Partial<NodeDisplayData>,
-  Partial<EdgeDisplayData>
->;
+export type NodeAttrs = Partial<NodeDisplayData>;
+export type EdgeAttrs = Partial<EdgeDisplayData>;
+export type GraphAttrs = {
+  theme: "dark" | "light";
+  text: string;
+};
+
+export type VisGraph = Graph<NodeAttrs, EdgeAttrs, GraphAttrs>;
 
 export function graphDirectedLoops(): VisGraph {
   return new Graph({
