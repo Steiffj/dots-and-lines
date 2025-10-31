@@ -1,0 +1,25 @@
+- Generate lots of test data.
+- Make node hover renderers responsive to light/dark mode.
+- Render self loops.
+- Efficient node/edge reducers - object pooling with garbage collection management through graphology event emitters.
+    - support multiple callbacks with priority and graph/renderer variable access.
+- Event performance optimizations (turn off node/edge events while panning?)
+- Manage dragging state in graph attributes.
+- Keyboard navigation.
+- Create new nodes and edges interactively.
+    - Use a lil baby invisible node to support connecting new edge to target.
+- Monaco editor integration.
+- Read/edit data from filesystem.
+    - Edit graph datasets with live reload.
+- Utilize WebGL layer for grouping?
+- Minimap?
+- Resizable split window
+- Tab selection when stage is focused based on mouse position.
+    - Navigate via tab/shift-tab
+    - Esc to leave stage focus
+- Render HTML overlay/popup elements on top of stage - auto constrain to viewport.
+- Bottom status bar.
+- Icon registry (Python API with server-side image/SVG resizing via query params)
+- Layout options
+    - Fix subgraphs in place
+    - Only allow specified nodes to move
