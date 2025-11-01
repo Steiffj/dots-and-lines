@@ -3,7 +3,7 @@ import Graph from "graphology";
 import clusters from "graphology-generators/random/clusters";
 import circlepack from "graphology-layout/circlepack";
 import type { ColorPalette } from "./palettes";
-import type { DALGraph } from "./graph-types";
+import type { DALGraph } from "./dal-types";
 
 export function graphDirectedLoops(): DALGraph {
   return new Graph({

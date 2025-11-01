@@ -23,7 +23,7 @@ import type {
   DALGraphAttrs,
   DALNodeAttrs,
   DALGraph,
-} from "./graph-types";
+} from "./dal-types";
 
 let host: HTMLElement;
 let sigma: DALSigma;
