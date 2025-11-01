@@ -6,8 +6,16 @@ type SerializedEventState = {
 
 export class EventState implements Serializable<SerializedEventState> {
   #selection = new Set<string>();
-  dragging = false;
-  draggedNode: string | undefined;
+  #draggedNode: string | undefined;
+  #active: string | undefined;
+  #activeType: "node" | "edge" | undefined;
+
+  get active() {
+    return {
+      active: this.#active,
+      type: this.#activeType,
+    };
+  }
 
   serialize() {
     return {
@@ -17,8 +25,7 @@ export class EventState implements Serializable<SerializedEventState> {
 
   deserialize(obj: SerializedEventState): void {
     this.#selection = new Set(obj.selection);
-    this.dragging = false;
-    this.draggedNode = undefined;
+    this.#draggedNode = undefined;
   }
 
   select(...nodes: string[]) {
@@ -35,5 +42,22 @@ export class EventState implements Serializable<SerializedEventState> {
 
   clearSelection() {
     this.#selection.clear();
+  }
+
+  get dragging() {
+    return this.#draggedNode;
+  }
+
+  dragStart(node: string) {
+    this.#draggedNode = node;
+    this.#active = node;
+    this.#activeType = "node";
+  }
+
+  dragEnd() {
+    this.#draggedNode = undefined;
+    this.#active = undefined;
+    this.#active = undefined;
+    this.#activeType = undefined;
   }
 }
