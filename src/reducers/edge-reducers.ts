@@ -1,10 +1,10 @@
-import type { EdgeAttrs, GraphAttrs, NodeAttrs } from "../data";
+import type { DALEdgeAttrs, DALGraphAttrs, DALNodeAttrs } from "../graph-types";
 import { type PooledEdgeReducer } from "./conductors";
 
 export const edgeReducerCommon: PooledEdgeReducer<
-  NodeAttrs,
-  EdgeAttrs,
-  GraphAttrs
+  DALNodeAttrs,
+  DALEdgeAttrs,
+  DALGraphAttrs
 > = (_, data, pooled) => {
   const display = pooled ?? {};
   display.color = data.color;
@@ -17,11 +17,11 @@ export const edgeReducerCommon: PooledEdgeReducer<
   return display;
 };
 
-export const BLUEducer: PooledEdgeReducer<NodeAttrs, EdgeAttrs, GraphAttrs> = (
-  _,
-  data,
-  pooled
-) => {
+export const BLUEducer: PooledEdgeReducer<
+  DALNodeAttrs,
+  DALEdgeAttrs,
+  DALGraphAttrs
+> = (_, data, pooled) => {
   let display = pooled ?? {};
   display.color = "blue";
   display.size = data.size ?? 1;
@@ -29,14 +29,29 @@ export const BLUEducer: PooledEdgeReducer<NodeAttrs, EdgeAttrs, GraphAttrs> = (
 };
 
 export const edgePaletteReducer: PooledEdgeReducer<
-  NodeAttrs,
-  EdgeAttrs,
-  GraphAttrs
+  DALNodeAttrs,
+  DALEdgeAttrs,
+  DALGraphAttrs
 > = (_, __, pooled, sigma) => {
   let display = pooled ?? {};
   const palette = sigma.getGraph().getAttribute("palette");
   if (palette) {
     display.color = palette.edge;
+  }
+  return display;
+};
+
+export const defaultEdgeLabels: PooledEdgeReducer<
+  DALNodeAttrs,
+  DALEdgeAttrs,
+  DALGraphAttrs
+> = (edge, data, pooled, sigma) => {
+  let display = pooled ?? {};
+  if (!data.label && !display.label) {
+    const g = sigma.getGraph();
+    const source = g.source(edge);
+    const target = g.target(edge);
+    display.label = `${source} -> ${target}`;
   }
   return display;
 };

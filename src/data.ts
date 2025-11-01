@@ -1,23 +1,11 @@
+import chroma from "chroma-js";
 import Graph from "graphology";
 import clusters from "graphology-generators/random/clusters";
 import circlepack from "graphology-layout/circlepack";
-import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
 import type { ColorPalette } from "./palettes";
-import chroma from "chroma-js";
+import type { DALGraph } from "./graph-types";
 
-export type NodeAttrs = Partial<NodeDisplayData> & {
-  cluster?: number;
-};
-export type EdgeAttrs = Partial<EdgeDisplayData>;
-export type GraphAttrs = {
-  theme?: "dark" | "light";
-  text?: string;
-  palette?: ColorPalette;
-};
-
-export type VisGraph = Graph<NodeAttrs, EdgeAttrs, GraphAttrs>;
-
-export function graphDirectedLoops(): VisGraph {
+export function graphDirectedLoops(): DALGraph {
   return new Graph({
     allowSelfLoops: true,
     type: "directed",
@@ -29,7 +17,7 @@ export function createTestGraph(
   options: { order: number; size: number; clusters: number },
   palette: ColorPalette
 ) {
-  const g = clusters(Graph, options) as VisGraph;
+  const g = clusters(Graph, options) as DALGraph;
   circlepack.assign(g, { hierarchyAttributes: ["cluster"] });
   const colors = chroma
     .scale(palette.span)

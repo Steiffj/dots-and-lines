@@ -18,7 +18,7 @@ export type PooledEdgeReducer<
   E extends Attributes,
   A extends Attributes
 > = (
-  node: string,
+  edge: string,
   data: E,
   pooled: Partial<DisplayData> | undefined,
   sigma: Sigma<N, E, A>

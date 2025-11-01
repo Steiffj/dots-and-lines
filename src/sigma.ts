@@ -7,19 +7,26 @@ import {
   DEFAULT_NODE_PROGRAM_CLASSES,
   type Settings,
 } from "sigma/settings";
-import type { EdgeAttrs, GraphAttrs, NodeAttrs, VisGraph } from "./data";
 import {
   EdgeReducerConductor,
   NodeReducerConductor,
 } from "./reducers/conductors";
 import {
+  defaultEdgeLabels,
   edgePaletteReducer,
   edgeReducerCommon,
 } from "./reducers/edge-reducers";
 import { nodeReducerCommon } from "./reducers/node-reducers";
+import type {
+  DALSigma,
+  DALEdgeAttrs,
+  DALGraphAttrs,
+  DALNodeAttrs,
+  DALGraph,
+} from "./graph-types";
 
 let host: HTMLElement;
-let sigma: Sigma<NodeAttrs, EdgeAttrs, GraphAttrs>;
+let sigma: DALSigma;
 const THEME_CONFIG = {
   node: () =>
     getComputedStyle(
@@ -36,7 +43,7 @@ const THEME_CONFIG = {
 };
 
 export function setupSigma(
-  graph: VisGraph,
+  graph: DALGraph,
   container: HTMLElement,
   settings: Partial<Settings>
 ) {
@@ -46,7 +53,7 @@ export function setupSigma(
   const nodeRGB = chroma(nodeColor).hex("rgb");
   const edgeRGB = chroma(edgeColor).hex("rgb");
 
-  const renderer = new Sigma<NodeAttrs, EdgeAttrs, GraphAttrs>(
+  const renderer = new Sigma<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>(
     graph,
     container,
     {
@@ -63,6 +70,7 @@ export function setupSigma(
       defaultEdgeColor: edgeRGB,
       labelColor: { color: textColor },
       edgeLabelColor: { color: textColor },
+      renderEdgeLabels: true,
     }
   );
 
@@ -75,6 +83,7 @@ export function setupSigma(
   const edgeConductor = new EdgeReducerConductor(sigma);
   edgeConductor.register(edgeReducerCommon);
   edgeConductor.register(edgePaletteReducer);
+  edgeConductor.register(defaultEdgeLabels);
 
   sigma.setSetting("nodeReducer", nodeConductor.reducer);
   sigma.setSetting("edgeReducer", edgeConductor.reducer);
