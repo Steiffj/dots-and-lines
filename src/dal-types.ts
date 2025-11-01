@@ -5,6 +5,7 @@ import type { ColorPalette } from "./palettes";
 import type { EventState } from "./events/event-state";
 
 export type DALSigma = Sigma<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;
+export type DALGraph = Graph<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;
 
 export type DALNodeAttrs = Partial<NodeDisplayData> & {
   cluster?: number;
@@ -16,5 +17,3 @@ export type DALGraphAttrs = {
   palette?: ColorPalette;
   ui: EventState;
 };
-
-export type DALGraph = Graph<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;

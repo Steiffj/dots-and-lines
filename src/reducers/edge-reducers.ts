@@ -1,5 +1,5 @@
 import type { DALEdgeAttrs, DALGraphAttrs, DALNodeAttrs } from "../dal-types";
-import { type PooledEdgeReducer } from "./conductors";
+import { type PooledEdgeReducer } from "./reducer.orchestrator";
 
 export const edgeReducerCommon: PooledEdgeReducer<
   DALNodeAttrs,

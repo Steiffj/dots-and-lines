@@ -8,9 +8,9 @@ import {
   type Settings,
 } from "sigma/settings";
 import {
-  EdgeReducerConductor,
-  NodeReducerConductor,
-} from "./reducers/conductors";
+  EdgeReducerOrchestrator,
+  NodeReducerOrchestrator,
+} from "./reducers/reducer.orchestrator";
 import {
   defaultEdgeLabels,
   edgePaletteReducer,
@@ -77,10 +77,10 @@ export function setupSigma(
   sigma = renderer;
   host = container;
 
-  const nodeConductor = new NodeReducerConductor(sigma);
+  const nodeConductor = new NodeReducerOrchestrator(sigma);
   nodeConductor.register(nodeReducerCommon);
 
-  const edgeConductor = new EdgeReducerConductor(sigma);
+  const edgeConductor = new EdgeReducerOrchestrator(sigma);
   edgeConductor.register(edgeReducerCommon);
   edgeConductor.register(edgePaletteReducer);
   edgeConductor.register(defaultEdgeLabels);

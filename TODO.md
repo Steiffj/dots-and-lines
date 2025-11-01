@@ -18,6 +18,13 @@ Keyboard navigation.
     - Navigate via tab/shift-tab
     - Esc to leave stage focus
 
+## State
+History stack for undo/redo functionality. Will reset when loading a different dataset/workspace.
+- Layout application (take snapshot of positions before starting layouts).
+- Manual node drag positions.
+- Node/edge creation.
+- Node/edge selection navigation.
+
 ## Visualization
 - __DONE-ish, needs perf testing__ Efficient node/edge reducers - object pooling with garbage collection management through graphology event emitters.
     - support multiple callbacks with priority and graph/renderer variable access.
