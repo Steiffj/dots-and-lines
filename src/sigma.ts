@@ -25,7 +25,7 @@ import type {
   DALGraph,
 } from "./dal-types";
 import { EventRegistry } from "./events/event.registry";
-import featDragAndDrop from "./events/drag-and-drop";
+import featDragAndDrop from "./features/drag-and-drop";
 import { EventState } from "./events/event-state";
 
 let host: HTMLElement;
