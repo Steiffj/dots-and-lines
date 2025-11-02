@@ -9,7 +9,7 @@ type Events = {
   [E in keyof SigmaEvents]: (...args: Params<E>) => void;
 };
 
-export class EventOrchestrator {
+export class EventRegistry {
   #listeners: Map<keyof SigmaEvents, Events[keyof SigmaEvents][]> = new Map();
 
   constructor(public readonly sigma: DALSigma) {}

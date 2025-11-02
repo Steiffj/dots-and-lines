@@ -30,7 +30,7 @@ export type PooledEdgeReducer<
  *
  * Leverages object pooling to minimize garbage collection related to display data objects used in Sigma's rendering lifecycle.
  */
-export class NodeReducerOrchestrator<
+export class NodeReducerRegistry<
   N extends Attributes,
   E extends Attributes,
   A extends Attributes
@@ -101,7 +101,7 @@ export class NodeReducerOrchestrator<
  *
  * Leverages object pooling to minimize garbage collection related to display data objects used in Sigma's rendering lifecycle.
  */
-export class EdgeReducerOrchestrator<
+export class EdgeReducerRegistry<
   N extends Attributes,
   E extends Attributes,
   A extends Attributes

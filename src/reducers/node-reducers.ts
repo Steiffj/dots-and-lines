@@ -1,5 +1,5 @@
 import type { EdgeAttrs, GraphAttrs, NodeAttrs } from "../data";
-import { type PooledNodeReducer } from "./reducer.orchestrator";
+import { type PooledNodeReducer } from "./reducer.registry";
 
 export const nodeReducerCommon: PooledNodeReducer<
   NodeAttrs,
