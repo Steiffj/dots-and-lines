@@ -21,11 +21,16 @@ export class RendererCache<
     },
     offscreenCanvas?: OffscreenCanvas
   ) {
-    this.text = new LRUCache(capacity.text);
+    this.text = new LRUCache(capacity.text, (_, bitmap) => bitmap.close());
     this.shapes = new LRUCache(capacity.shapes);
     // TODO not sure that this needs to be the same resolution as the rendered canvas
     // If not, Sigma may not need to be a field at all
     const { height, width } = this.sigma.getDimensions();
     this.offscreen = offscreenCanvas ?? new OffscreenCanvas(width, height);
+  }
+
+  clear() {
+    this.text.clear();
+    this.shapes.clear();
   }
 }
