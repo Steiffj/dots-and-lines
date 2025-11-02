@@ -16,7 +16,7 @@ export default (function init() {
     );
   }
   const graph = createTestGraph(
-    { order: 3600, size: 8000, clusters: 6 },
+    { order: 15000, size: 25000, clusters: 9 },
     PALETTE_HIGH_CONTRAST
   );
   setupSigma(graph, stage, {

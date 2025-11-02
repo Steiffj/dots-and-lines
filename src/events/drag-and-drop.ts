@@ -1,7 +1,7 @@
 import type { DALSigma } from "../dal-types";
-import { EventOrchestrator } from "./event.orchestrator";
+import { EventRegistry } from "./event.registry";
 
-export function setupDragAndDrop(orch: EventOrchestrator) {
+export function setupDragAndDrop(orch: EventRegistry) {
   // Start dragging
   orch.register("downNode", (sigma, payload) => {
     const state = sigma.getGraph().getAttribute("uiState");

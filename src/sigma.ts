@@ -8,9 +8,9 @@ import {
   type Settings,
 } from "sigma/settings";
 import {
-  EdgeReducerOrchestrator,
-  NodeReducerOrchestrator,
-} from "./reducers/reducer.orchestrator";
+  EdgeReducerRegistry,
+  NodeReducerRegistry,
+} from "./reducers/reducer.registry";
 import {
   defaultEdgeLabels,
   edgePaletteReducer,
@@ -24,7 +24,7 @@ import type {
   DALNodeAttrs,
   DALGraph,
 } from "./dal-types";
-import { EventOrchestrator } from "./events/event.orchestrator";
+import { EventRegistry } from "./events/event.registry";
 import { setupDragAndDrop } from "./events/drag-and-drop";
 import { EventState } from "./events/event-state";
 
@@ -81,10 +81,10 @@ export function setupSigma(
   sigma = renderer;
   host = container;
 
-  const nro = new NodeReducerOrchestrator(sigma);
+  const nro = new NodeReducerRegistry(sigma);
   nro.register(nodeReducerCommon);
 
-  const ero = new EdgeReducerOrchestrator(sigma);
+  const ero = new EdgeReducerRegistry(sigma);
   ero.register(edgeReducerCommon);
   ero.register(edgePaletteReducer);
   ero.register(defaultEdgeLabels);
@@ -92,6 +92,7 @@ export function setupSigma(
   sigma.setSetting("nodeReducer", nro.reducer);
   sigma.setSetting("edgeReducer", ero.reducer);
 
+  // TODO pass nro and ero to `setupDragAndDrop` (and define interface for reducer/event setup functions?)
   nro.register((node, _, pooled, sigma) => {
     let display = pooled ?? {};
     const g = sigma.getGraph();
@@ -102,7 +103,7 @@ export function setupSigma(
     return display;
   });
 
-  const eventOrch = new EventOrchestrator(sigma);
+  const eventOrch = new EventRegistry(sigma);
   setupDragAndDrop(eventOrch);
 
   return sigma;
