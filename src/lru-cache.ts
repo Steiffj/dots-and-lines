@@ -3,7 +3,7 @@ export class LRUCache<K, V> {
   readonly #cache: Map<K, V> = new Map();
   readonly #cleanup?: (key: K, value: V) => void;
 
-  constructor(capacity: number, cleanup: (key: K, value: V) => void) {
+  constructor(capacity: number, cleanup?: (key: K, value: V) => void) {
     this.#cap = capacity;
     if (cleanup) {
       this.#cleanup = cleanup;
