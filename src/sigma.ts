@@ -24,6 +24,9 @@ import type {
   DALNodeAttrs,
   DALGraph,
 } from "./dal-types";
+import { EventOrchestrator } from "./events/event.orchestrator";
+import { setupDragAndDrop } from "./events/drag-and-drop";
+import { EventState } from "./events/event-state";
 
 let host: HTMLElement;
 let sigma: DALSigma;
@@ -53,6 +56,7 @@ export function setupSigma(
   const nodeRGB = chroma(nodeColor).hex("rgb");
   const edgeRGB = chroma(edgeColor).hex("rgb");
 
+  graph.setAttribute("uiState", new EventState());
   const renderer = new Sigma<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>(
     graph,
     container,
@@ -77,16 +81,29 @@ export function setupSigma(
   sigma = renderer;
   host = container;
 
-  const nodeConductor = new NodeReducerOrchestrator(sigma);
-  nodeConductor.register(nodeReducerCommon);
+  const nro = new NodeReducerOrchestrator(sigma);
+  nro.register(nodeReducerCommon);
 
-  const edgeConductor = new EdgeReducerOrchestrator(sigma);
-  edgeConductor.register(edgeReducerCommon);
-  edgeConductor.register(edgePaletteReducer);
-  edgeConductor.register(defaultEdgeLabels);
+  const ero = new EdgeReducerOrchestrator(sigma);
+  ero.register(edgeReducerCommon);
+  ero.register(edgePaletteReducer);
+  ero.register(defaultEdgeLabels);
 
-  sigma.setSetting("nodeReducer", nodeConductor.reducer);
-  sigma.setSetting("edgeReducer", edgeConductor.reducer);
+  sigma.setSetting("nodeReducer", nro.reducer);
+  sigma.setSetting("edgeReducer", ero.reducer);
+
+  nro.register((node, _, pooled, sigma) => {
+    let display = pooled ?? {};
+    const g = sigma.getGraph();
+    const state = g.getAttribute("uiState");
+    if (state.dragging === node) {
+      display.highlighted = true;
+    }
+    return display;
+  });
+
+  const eventOrch = new EventOrchestrator(sigma);
+  setupDragAndDrop(eventOrch);
 
   return sigma;
 }
@@ -104,7 +121,7 @@ export function sigmaDarkModeToggle() {
   const nodeColor = THEME_CONFIG.node();
   const edgeColor = THEME_CONFIG.edge();
   const textColor = THEME_CONFIG.text();
-  // Sigma's WebGL rendering (I think?) does not like Oklab color spaces - convert to RGB
+  // WebGL rendering (I think?) does not like Oklab color spaces - convert to RGB
   const nodeRGB = chroma(nodeColor).hex("rgb");
   const edgeRGB = chroma(edgeColor).hex("rgb");
   sigma.setSetting("defaultNodeColor", nodeRGB);

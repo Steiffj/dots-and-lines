@@ -43,6 +43,9 @@ History stack for undo/redo functionality. Will reset when loading a different d
 - Render incident edge details AND hide auto-displayed edge labels when hovering or selecting a node.
 - Grey out/pseudo-hide non-adjacent nodes when selecting a node.
 - Manage selection state in graph attributes
+- Drag and drop with multi-selection.
+    - Dragging any node moves all of with with the same trajectory.
+    - Calculating coords will be a little interesting - probably need to track mouse event pos vs previous pos.
 
 ### Tailwind to Canvas/WebGL
 - Border radius
