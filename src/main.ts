@@ -1,12 +1,12 @@
+import "@fontsource/fira-mono";
 import {
   registerDarkModeToggleHandler,
   setupDarkModeToggle,
 } from "./dark-mode";
 import { createTestGraph } from "./data";
-import { PALETTE_HIGH_CONTRAST, PALETTE_HOT } from "./palettes";
+import { PALETTE_HIGH_CONTRAST } from "./palettes";
 import { setupSigma, sigmaDarkModeToggle } from "./sigma";
 import "./style.css";
-import "@fontsource/fira-mono";
 
 export default (function init() {
   const stage = document.getElementById("stage");

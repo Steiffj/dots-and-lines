@@ -1,10 +1,10 @@
-import type { EdgeAttrs, GraphAttrs, NodeAttrs } from "../data";
-import { type PooledNodeReducer } from "./reducer.registry";
+import type { DALEdgeAttrs, DALGraphAttrs, DALNodeAttrs } from "../dal-types";
+import type { PooledNodeReducer } from "./types";
 
 export const nodeReducerCommon: PooledNodeReducer<
-  NodeAttrs,
-  EdgeAttrs,
-  GraphAttrs
+  DALNodeAttrs,
+  DALEdgeAttrs,
+  DALGraphAttrs
 > = (_, data, pooled) => {
   const display = pooled ?? {};
   display.color = data.color;
@@ -20,11 +20,11 @@ export const nodeReducerCommon: PooledNodeReducer<
   return display;
 };
 
-export const REDucer: PooledNodeReducer<NodeAttrs, EdgeAttrs, GraphAttrs> = (
-  _,
-  __,
-  pooled
-) => {
+export const REDucer: PooledNodeReducer<
+  DALNodeAttrs,
+  DALEdgeAttrs,
+  DALGraphAttrs
+> = (_, __, pooled) => {
   let display = pooled ?? {};
   display.color = "red";
   return display;
