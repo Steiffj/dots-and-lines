@@ -25,7 +25,7 @@ import type {
   DALGraph,
 } from "./dal-types";
 import { EventRegistry } from "./events/event.registry";
-import { setupDragAndDrop } from "./events/drag-and-drop";
+import featDragAndDrop from "./events/drag-and-drop";
 import { EventState } from "./events/event-state";
 
 let host: HTMLElement;
@@ -104,7 +104,7 @@ export function setupSigma(
   });
 
   const eventOrch = new EventRegistry(sigma);
-  setupDragAndDrop(eventOrch);
+  featDragAndDrop(eventOrch);
 
   return sigma;
 }
