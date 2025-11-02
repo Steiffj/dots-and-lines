@@ -7,26 +7,21 @@ import {
   DEFAULT_NODE_PROGRAM_CLASSES,
   type Settings,
 } from "sigma/settings";
+import type {
+  DALEdgeAttrs,
+  DALGraph,
+  DALGraphAttrs,
+  DALNodeAttrs,
+  DALSigma,
+} from "./dal-types";
+import { EventState } from "./events/event-state";
+import { EventRegistry } from "./events/event.registry";
+import featCore from "./features/core";
+import featDragAndDrop from "./features/drag-and-drop";
 import {
   EdgeReducerRegistry,
   NodeReducerRegistry,
 } from "./reducers/reducer.registry";
-import {
-  defaultEdgeLabels,
-  edgePaletteReducer,
-  edgeReducerCommon,
-} from "./reducers/edge-reducers";
-import { nodeReducerCommon } from "./reducers/node-reducers";
-import type {
-  DALSigma,
-  DALEdgeAttrs,
-  DALGraphAttrs,
-  DALNodeAttrs,
-  DALGraph,
-} from "./dal-types";
-import { EventRegistry } from "./events/event.registry";
-import featDragAndDrop from "./features/drag-and-drop";
-import { EventState } from "./events/event-state";
 
 let host: HTMLElement;
 let sigma: DALSigma;
@@ -84,13 +79,18 @@ export function setupSigma(
   const eventRegistry = new EventRegistry(sigma);
   const nodeReducerRegistry = new NodeReducerRegistry(sigma);
   const edgeReducerRegistry = new EdgeReducerRegistry(sigma);
+
+  /**
+   * Core features must be initialized before setting Sigma's node/edge reducers,
+   * otherwise object pool and event state won't be available.
+   */
+  featCore(eventRegistry, {
+    node: nodeReducerRegistry,
+    edge: edgeReducerRegistry,
+  });
+
   sigma.setSetting("nodeReducer", nodeReducerRegistry.reducer);
   sigma.setSetting("edgeReducer", edgeReducerRegistry.reducer);
-
-  nodeReducerRegistry.register(nodeReducerCommon);
-  edgeReducerRegistry.register(edgeReducerCommon);
-  edgeReducerRegistry.register(edgePaletteReducer);
-  edgeReducerRegistry.register(defaultEdgeLabels);
 
   featDragAndDrop(eventRegistry, {
     node: nodeReducerRegistry,
