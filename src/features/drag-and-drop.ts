@@ -1,10 +1,10 @@
 import type { DALSigma } from "../dal-types";
-import type { FeatureRegistration } from "../features/types";
-import { EventRegistry } from "./event.registry";
+import type { FeatureRegistration } from "./types";
+import { EventRegistry } from "../events/event.registry";
 
-const featDragAndDrop: FeatureRegistration = (orch: EventRegistry) => {
+const featDragAndDrop: FeatureRegistration = (events: EventRegistry) => {
   // Start dragging
-  orch.register("downNode", (sigma, payload) => {
+  events.register("downNode", (sigma, payload) => {
     const state = sigma.getGraph().getAttribute("uiState");
     state.dragStart(payload.node);
     if (!sigma.getCustomBBox()) {
@@ -13,7 +13,7 @@ const featDragAndDrop: FeatureRegistration = (orch: EventRegistry) => {
   });
 
   // Update dragging position
-  orch.register("moveBody", (sigma, payload) => {
+  events.register("moveBody", (sigma, payload) => {
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     const node = state.dragging;
@@ -45,8 +45,8 @@ const featDragAndDrop: FeatureRegistration = (orch: EventRegistry) => {
     }
   };
 
-  orch.register("upNode", drop);
-  orch.register("upStage", drop);
+  events.register("upNode", drop);
+  events.register("upStage", drop);
 };
 
 export default featDragAndDrop;
