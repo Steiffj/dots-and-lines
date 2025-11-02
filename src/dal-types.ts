@@ -15,5 +15,5 @@ export type DALGraphAttrs = {
   theme?: "dark" | "light";
   text?: string;
   palette?: ColorPalette;
-  ui: EventState;
+  uiState: EventState;
 };
