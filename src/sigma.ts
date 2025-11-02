@@ -81,30 +81,21 @@ export function setupSigma(
   sigma = renderer;
   host = container;
 
-  const nro = new NodeReducerRegistry(sigma);
-  nro.register(nodeReducerCommon);
+  const eventRegistry = new EventRegistry(sigma);
+  const nodeReducerRegistry = new NodeReducerRegistry(sigma);
+  const edgeReducerRegistry = new EdgeReducerRegistry(sigma);
+  sigma.setSetting("nodeReducer", nodeReducerRegistry.reducer);
+  sigma.setSetting("edgeReducer", edgeReducerRegistry.reducer);
 
-  const ero = new EdgeReducerRegistry(sigma);
-  ero.register(edgeReducerCommon);
-  ero.register(edgePaletteReducer);
-  ero.register(defaultEdgeLabels);
+  nodeReducerRegistry.register(nodeReducerCommon);
+  edgeReducerRegistry.register(edgeReducerCommon);
+  edgeReducerRegistry.register(edgePaletteReducer);
+  edgeReducerRegistry.register(defaultEdgeLabels);
 
-  sigma.setSetting("nodeReducer", nro.reducer);
-  sigma.setSetting("edgeReducer", ero.reducer);
-
-  // TODO pass nro and ero to `setupDragAndDrop` (and define interface for reducer/event setup functions?)
-  nro.register((node, _, pooled, sigma) => {
-    let display = pooled ?? {};
-    const g = sigma.getGraph();
-    const state = g.getAttribute("uiState");
-    if (state.dragging === node) {
-      display.highlighted = true;
-    }
-    return display;
+  featDragAndDrop(eventRegistry, {
+    node: nodeReducerRegistry,
+    edge: edgeReducerRegistry,
   });
-
-  const eventOrch = new EventRegistry(sigma);
-  featDragAndDrop(eventOrch);
 
   return sigma;
 }
