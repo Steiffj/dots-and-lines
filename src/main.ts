@@ -1,10 +1,10 @@
 import "@fontsource/fira-mono";
+import { PALETTE_HIGH_CONTRAST } from "./color-scheme/palettes";
 import {
   registerDarkModeToggleHandler,
   setupDarkModeToggle,
 } from "./dark-mode";
 import { createTestGraph } from "./data";
-import { PALETTE_HIGH_CONTRAST } from "./palettes";
 import { setupSigma, sigmaDarkModeToggle } from "./sigma";
 import "./style.css";
 
