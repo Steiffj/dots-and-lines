@@ -1,7 +1,8 @@
 import type { DALSigma } from "../dal-types";
+import type { FeatureRegistration } from "../features/types";
 import { EventRegistry } from "./event.registry";
 
-export function setupDragAndDrop(orch: EventRegistry) {
+const featDragAndDrop: FeatureRegistration = (orch: EventRegistry) => {
   // Start dragging
   orch.register("downNode", (sigma, payload) => {
     const state = sigma.getGraph().getAttribute("uiState");
@@ -46,4 +47,6 @@ export function setupDragAndDrop(orch: EventRegistry) {
 
   orch.register("upNode", drop);
   orch.register("upStage", drop);
-}
+};
+
+export default featDragAndDrop;
