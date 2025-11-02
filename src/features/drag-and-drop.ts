@@ -1,8 +1,7 @@
 import type { DALSigma } from "../dal-types";
 import type { FeatureRegistration } from "./types";
-import { EventRegistry } from "../events/event.registry";
 
-const featDragAndDrop: FeatureRegistration = (events: EventRegistry) => {
+const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   // Start dragging
   events.register("downNode", (sigma, payload) => {
     const state = sigma.getGraph().getAttribute("uiState");
@@ -47,6 +46,17 @@ const featDragAndDrop: FeatureRegistration = (events: EventRegistry) => {
 
   events.register("upNode", drop);
   events.register("upStage", drop);
+
+  // Keep dragging node highlighted to prevent flashing during fast dragging
+  reducers.node.register((node, _, pooled, sigma) => {
+    let display = pooled ?? {};
+    const g = sigma.getGraph();
+    const state = g.getAttribute("uiState");
+    if (state.dragging === node) {
+      display.highlighted = true;
+    }
+    return display;
+  });
 };
 
 export default featDragAndDrop;

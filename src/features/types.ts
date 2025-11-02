@@ -7,7 +7,7 @@ import type {
 
 export type FeatureRegistration = (
   events: EventRegistry,
-  reducers?: {
+  reducers: {
     node: NodeReducerRegistry<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;
     edge: EdgeReducerRegistry<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;
   }
