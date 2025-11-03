@@ -15,7 +15,7 @@ export type DALEdgeAttrs = Partial<EdgeDisplayData>;
 export type DALGraphAttrs = {
   uiState: EventState;
   styles: SigmaRenderStyles;
-  palette: ColorPalette;
+  palette?: ColorPalette;
 };
 
 export type DALSettings = Settings<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;

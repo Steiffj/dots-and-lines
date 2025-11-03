@@ -36,6 +36,22 @@ export type SigmaRenderStyles = {
    * Label border radius for node hover labels.
    */
   borderRadius: number | number[];
+  /**
+   * Box shadow blur for node hover labels.
+   */
+  shadowBlur?: number;
+  /**
+   * Box shadow color for node hover labels.
+   */
+  shadowColor?: string;
+  /**
+   * Box shadow horizontal offset for node hover labels.
+   */
+  shadowOffsetX?: number;
+  /**
+   * Box shadow vertical offset for node hover labels.
+   */
+  shadowOffsetY?: number;
 };
 
 /**

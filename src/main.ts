@@ -17,11 +17,9 @@ export default (function init() {
     PALETTE_HIGH_CONTRAST
   );
   setupSigma(graph, stage, {
-    // labelFont: "Fira Mono",
-    // edgeLabelFont: "Fira Mono",
     renderEdgeLabels: true,
   });
-
   setupColorSchemeToggle();
+
   // registerDarkModeToggleHandler(sigmaDarkModeToggle);
 })();
