@@ -6,12 +6,16 @@ const SIGMA_SETTINGS = document.getElementById("sigma-settings");
 const SIGMA_STYLES = document.getElementById("sigma-styles");
 
 export function syncSigmaColorScheme(sigma: DALSigma) {
+  syncSigmaSettings(sigma);
+  syncSigmaStyles(sigma);
+}
+
+/**
+ * Synchronize rendering styles controlled by global Sigma settings.
+ */
+function syncSigmaSettings(sigma: DALSigma) {
   if (!SIGMA_SETTINGS) {
     throw new Error("Sigma settings element is missing.");
-  }
-
-  if (!SIGMA_STYLES) {
-    throw new Error("Sigma styles element is missing.");
   }
 
   for (const el of SIGMA_SETTINGS.querySelectorAll("div")) {
@@ -68,6 +72,15 @@ export function syncSigmaColorScheme(sigma: DALSigma) {
         );
     }
   }
+}
+
+/**
+ * Synchronize styles used by Sigma node/edge renderers and reducers.
+ */
+function syncSigmaStyles(sigma: DALSigma) {
+  if (!SIGMA_STYLES) {
+    throw new Error("Sigma styles element is missing.");
+  }
 
   const styles: Partial<SigmaRenderStyles> = {};
   for (const el of SIGMA_STYLES.querySelectorAll("div")) {
@@ -86,6 +99,16 @@ export function syncSigmaColorScheme(sigma: DALSigma) {
       case "borderRadius":
         styles.borderRadius = +getComputedStyle(el).borderRadius.slice(0, -2); // removes 'px' TODO could also be an array - should support parsing for different border radii values
         break;
+      case "shadowBlur":
+        // styles.shadowBlur = getComputedStyle(el).boxShadow;
+        break;
+      case "shadowColor":
+        styles.shadowColor = getComputedStyle(el).backgroundColor;
+        break;
+      case "shadowOffsetX":
+        break;
+      case "shadowOffsetY":
+        break;
       default:
         throw new Error(
           `'${setting}' is not a valid Sigma render style. Read from ${el}`
@@ -99,3 +122,15 @@ export function syncSigmaColorScheme(sigma: DALSigma) {
 
   sigma.getGraph().setAttribute("styles", styles as SigmaRenderStyles);
 }
+
+// function parseBoxShadow(style: string) {
+//   const shadows = style.split(",").map((shadow) =>
+//     shadow
+//       .trim()
+//       .split(" ")
+//       .map((val) => val.trim())
+//       .filter((val) => val !== "inset")
+//   ).map(values => ({
+
+//   }));
+// }

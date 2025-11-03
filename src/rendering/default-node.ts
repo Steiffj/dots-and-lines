@@ -7,6 +7,7 @@ import type {
   DALSigma,
 } from "../dal-types";
 import { RendererCache } from "./renderer-cache";
+import chroma from "chroma-js";
 
 export class DefaultNodeLabelRenderer {
   cache: RendererCache<
@@ -43,6 +44,15 @@ export class DefaultNodeLabelRenderer {
     return this.sigma.getGraph().getAttribute("styles");
   }
 
+  get palette() {
+    return this.sigma.getGraph().getAttribute("palette");
+  }
+
+  /**
+   * Basic node label renderer. Displays label text with default styles.
+   *
+   * Adapted from built-in Sigma label renderer.
+   */
   readonly drawLabel = (
     ctx: CanvasRenderingContext2D,
     data: PartialButFor<
@@ -70,31 +80,40 @@ export class DefaultNodeLabelRenderer {
     ctx.fillText(data.label, data.x + data.size + 3, data.y + size / 3);
   };
 
+  /**
+   * Default node hover renderer. Displays label text with a background.
+   *
+   * Adapted from built-in Sigma hover renderer.
+   */
   readonly drawHover = (
-    context: CanvasRenderingContext2D,
+    ctx: CanvasRenderingContext2D,
     data: PartialButFor<
       NodeDisplayData,
       "x" | "y" | "size" | "label" | "color"
     >,
     settings: DALSettings
   ): void => {
+    const styles = this.styles;
     const size = settings.labelSize,
       font = settings.labelFont,
       weight = settings.labelWeight;
 
-    context.font = `${weight} ${size}px ${font}`;
+    ctx.font = `${weight} ${size}px ${font}`;
 
-    // Then we draw the label background
-    context.fillStyle = "#FFF";
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
-    context.shadowBlur = 8;
-    context.shadowColor = "#000";
+    // Draw the label background
+    ctx.fillStyle = styles.backgroundColor;
+    // ctx.strokeStyle = styles.borderColor; // TODO doesn't look good with box shadow plus outline around node
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 4;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = chroma(styles.shadowColor ?? "#000000")
+      .alpha(0.5)
+      .css();
 
     const PADDING = 2;
 
     if (typeof data.label === "string") {
-      const textWidth = context.measureText(data.label).width,
+      const textWidth = ctx.measureText(data.label).width,
         boxWidth = Math.round(textWidth + 5),
         boxHeight = Math.round(size + 2 * PADDING),
         radius = Math.max(data.size, size / 2) + PADDING;
@@ -104,26 +123,27 @@ export class DefaultNodeLabelRenderer {
         Math.abs(Math.pow(radius, 2) - Math.pow(boxHeight / 2, 2))
       );
 
-      context.beginPath();
-      context.moveTo(data.x + xDeltaCoord, data.y + boxHeight / 2);
-      context.lineTo(data.x + radius + boxWidth, data.y + boxHeight / 2);
-      context.lineTo(data.x + radius + boxWidth, data.y - boxHeight / 2);
-      context.lineTo(data.x + xDeltaCoord, data.y - boxHeight / 2);
-      context.arc(data.x, data.y, radius, angleRadian, -angleRadian);
-      context.closePath();
-      context.fill();
+      ctx.beginPath();
+      ctx.moveTo(data.x + xDeltaCoord, data.y + boxHeight / 2);
+      ctx.lineTo(data.x + radius + boxWidth, data.y + boxHeight / 2);
+      ctx.lineTo(data.x + radius + boxWidth, data.y - boxHeight / 2);
+      ctx.lineTo(data.x + xDeltaCoord, data.y - boxHeight / 2);
+      ctx.arc(data.x, data.y, radius, angleRadian, -angleRadian);
+      ctx.closePath();
+      ctx.fill();
+      // ctx.stroke();
     } else {
-      context.beginPath();
-      context.arc(data.x, data.y, data.size + PADDING, 0, Math.PI * 2);
-      context.closePath();
-      context.fill();
+      ctx.beginPath();
+      ctx.arc(data.x, data.y, data.size + PADDING, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
     }
 
-    context.shadowOffsetX = 0;
-    context.shadowOffsetY = 0;
-    context.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur = 0;
 
-    // And finally we draw the label
-    this.drawLabel(context, data, settings);
+    // Draw the label text
+    this.drawLabel(ctx, data, settings);
   };
 }

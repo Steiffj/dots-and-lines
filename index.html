@@ -7,30 +7,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dots and Lines</title>
   </head>
-  <body>
+  <body class="text-stone-900 dark:text-stone-50 bg-stone-100 dark:bg-stone-950">
     <div class="relative overflow-hidden h-screen w-screen">
       <div class="absolute w-full h-full z-10 pointer-events-none">
-        <h1 class="absolute p-4 text-2xl pointer-events-auto text-stone-900 dark:text-stone-50">Dots and Lines</h1>
+        <h1 class="absolute p-4 text-2xl pointer-events-auto ">Dots and Lines</h1>
       </div>
-      <div id="stage" class="absolute w-full h-full transition-colors bg-stone-100 dark:bg-stone-950"></div>
+      <div id="stage" class="absolute w-full h-full transition-colors "></div>
     </div>
 
-    <div id="sigma-settings">
-      <div data-sigma-setting="defaultNodeColor" class="hidden bg-emerald-600 dark:bg-emerald-500"></div>
-      <div data-sigma-setting="defaultEdgeColor" class="hidden bg-stone-500 dark:bg-stone-600"></div>
-      <div data-sigma-setting="labelFont" class="hidden"></div>
-      <div data-sigma-setting="labelSize" class="hidden text-sm"></div>
-      <div data-sigma-setting="labelWeight" class="hidden font-normal"></div>
-      <div data-sigma-setting="labelColor" class="hidden text-stone-900 dark:text-stone-100"></div>
-      <div data-sigma-setting="edgeLabelFont" class="hidden"></div>
-      <div data-sigma-setting="edgeLabelSize" class="hidden text-sm"></div>
-      <div data-sigma-setting="edgeLabelColor" class="hidden text-shadow-stone-900 dark:text-stone-100"></div>
+    <div id="sigma-settings" class="hidden">
+      <div data-sigma-setting="defaultNodeColor" class="bg-emerald-600 dark:bg-emerald-500"></div>
+      <div data-sigma-setting="defaultEdgeColor" class="bg-stone-500 dark:bg-stone-600"></div>
+      <div data-sigma-setting="labelFont"></div>
+      <div data-sigma-setting="labelSize" class="text-base"></div>
+      <div data-sigma-setting="labelWeight" class="font-normal"></div>
+      <div data-sigma-setting="labelColor" class="text-stone-900 dark:text-stone-100"></div>
+      <div data-sigma-setting="edgeLabelFont"></div>
+      <div data-sigma-setting="edgeLabelSize" class="text-sm"></div>
+      <div data-sigma-setting="edgeLabelColor" class="text-shadow-stone-900 dark:text-stone-100"></div>
     </div>
 
-    <div id="sigma-styles">
-      <div data-sigma-style="backgroundColor" class="hidden bg-current dark:bg-current"></div>
-      <div data-sigma-style="borderColor" class="hidden border-stone-600 dark:border-stone-400"></div>
-      <div data-sigma-style="borderRadius" class="hidden rounded-sm"></div>
+    <div id="sigma-styles" class="hidden">
+      <div data-sigma-style="backgroundColor" class="bg-stone-100 dark:bg-stone-900"></div>
+      <div data-sigma-style="borderColor" class="border-stone-600 dark:border-stone-400"></div>
+      <div data-sigma-style="borderRadius" class="rounded-sm"></div>
+      <div data-sigma-style="shadowBlur" class="shadow-md shadow-amber-300 dark:shadow-amber-600"></div>
+      <div data-sigma-style="shadowColor" class="bg-stone-950/75 dark:bg-stone-800/50"></div>
+      <div data-sigma-style="shadowOffsetX" class="shadow-md shadow-amber-300 dark:shadow-amber-600"></div>
+      <div data-sigma-style="shadowOffsetY" class="shadow-md shadow-amber-300 dark:shadow-amber-600"></div>
     </div>
   </body>
 </html>
