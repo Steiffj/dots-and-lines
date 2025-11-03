@@ -24,6 +24,7 @@ import {
   NodeReducerRegistry,
 } from "./reducers/reducer.registry";
 import { DefaultNodeLabelRenderer } from "./rendering/default-node";
+import featHoverLegibility from "./features/hover-legibility";
 
 let sigma: DALSigma;
 
@@ -74,6 +75,10 @@ export function setupSigma(
   sigma.setSetting("nodeReducer", nodeReducerRegistry.reducer);
   sigma.setSetting("edgeReducer", edgeReducerRegistry.reducer);
 
+  featHoverLegibility(eventRegistry, {
+    node: nodeReducerRegistry,
+    edge: edgeReducerRegistry,
+  });
   featDragAndDrop(eventRegistry, {
     node: nodeReducerRegistry,
     edge: edgeReducerRegistry,

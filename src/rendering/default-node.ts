@@ -93,6 +93,7 @@ export class DefaultNodeLabelRenderer {
     >,
     settings: DALSettings
   ): void => {
+    // TODO add a dedicated renderer type for dragging nodes
     // const state = this.state;
     // if (state.dragging) {
     //   this.drawLabel(ctx, data, settings);

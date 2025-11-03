@@ -19,13 +19,3 @@ export const nodeReducerCommon: PooledNodeReducer<
   display.zIndex = data.zIndex;
   return display;
 };
-
-export const REDucer: PooledNodeReducer<
-  DALNodeAttrs,
-  DALEdgeAttrs,
-  DALGraphAttrs
-> = (_, __, pooled) => {
-  let display = pooled ?? {};
-  display.color = "red";
-  return display;
-};
