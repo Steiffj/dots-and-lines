@@ -1,7 +1,7 @@
 import type { DALEdgeAttrs, DALGraphAttrs, DALNodeAttrs } from "../dal-types";
 import type { PooledEdgeReducer } from "./types";
 
-export const edgeReducerCommon: PooledEdgeReducer<
+export const edgeReducerPoolInit: PooledEdgeReducer<
   DALNodeAttrs,
   DALEdgeAttrs,
   DALGraphAttrs
@@ -14,17 +14,6 @@ export const edgeReducerCommon: PooledEdgeReducer<
   display.size = data.size ?? 1;
   display.type = data.type;
   display.zIndex = data.zIndex;
-  return display;
-};
-
-export const BLUEducer: PooledEdgeReducer<
-  DALNodeAttrs,
-  DALEdgeAttrs,
-  DALGraphAttrs
-> = (_, data, pooled) => {
-  let display = pooled ?? {};
-  display.color = "blue";
-  display.size = data.size ?? 1;
   return display;
 };
 

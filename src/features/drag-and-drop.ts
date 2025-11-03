@@ -9,14 +9,14 @@ const originalSettings: Partial<DALSettings> = {};
 const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   events.register("enterNode", (sigma) => {
     const state = sigma.getGraph().getAttribute("uiState");
-    if (!state.dragging) {
+    if (!state.drag.key) {
       sigma.getContainer().style.cursor = "grab";
     }
   });
 
   events.register("leaveNode", (sigma) => {
     const state = sigma.getGraph().getAttribute("uiState");
-    if (!state.dragging) {
+    if (!state.drag.key) {
       sigma.getContainer().style.cursor = "initial";
     }
   });
@@ -24,8 +24,9 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   // Start dragging
   events.register("downNode", (sigma, payload) => {
     sigma.getContainer().style.cursor = "grabbing";
-    const state = sigma.getGraph().getAttribute("uiState");
-    state.dragStart(payload.node);
+    const g = sigma.getGraph();
+    const state = g.getAttribute("uiState");
+    state.dragStart(payload.node, g);
     if (!sigma.getCustomBBox()) {
       sigma.setCustomBBox(sigma.getBBox());
     }
@@ -35,7 +36,7 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   events.register("moveBody", (sigma, payload) => {
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
-    const draggedNode = state.dragging;
+    const draggedNode = state.drag.key;
     if (!draggedNode) {
       return;
     }
@@ -63,13 +64,13 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   const drop = (sigma: DALSigma) => {
     sigma.getContainer().style.cursor = "initial";
     const state = sigma.getGraph().getAttribute("uiState");
-    const draggedNode = state.dragging;
+    const draggedNode = state.drag.key;
     if (!draggedNode) {
       return;
     }
 
     sigma.setCustomBBox(null);
-    state.dragEnd();
+    const incident = state.dragEnd();
 
     // TODO refactor
     // if (
@@ -90,7 +91,8 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
 
     sigma.scheduleRefresh({
       partialGraph: {
-        nodes: [draggedNode],
+        nodes: [...incident.nodes, draggedNode],
+        edges: [...incident.edges],
       },
     });
   };
@@ -104,7 +106,7 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
 
-    const draggedNode = state.dragging;
+    const draggedNode = state.drag.key;
     if (!draggedNode) {
       return display;
     }
@@ -115,8 +117,8 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
       return display;
     }
 
-    const neighbors = g.neighbors(state.dragging);
-    if (neighbors.includes(node)) {
+    const incident = state.drag.incident!;
+    if (incident.nodes.has(node)) {
       display.highlighted = true;
       display.forceLabel = true;
     } else {
@@ -131,19 +133,16 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
     let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
-    if (!state.dragging) {
+    if (!state.drag.key) {
       return display;
     }
 
-    if (
-      g.source(edge) === state.dragging ||
-      g.target(edge) === state.dragging
-    ) {
+    const incident = state.drag.incident!;
+    if (incident.edges.has(edge)) {
       display.label = display.label ?? data.label;
       display.forceLabel = true;
     } else {
       display.label = undefined;
-      // display.hidden = true;
     }
 
     return display;
