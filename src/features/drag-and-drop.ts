@@ -2,8 +2,23 @@ import type { DALSigma } from "../dal-types";
 import type { FeatureRegistration } from "./types";
 
 const featDragAndDrop: FeatureRegistration = (events, reducers) => {
+  events.register("enterNode", (sigma) => {
+    const state = sigma.getGraph().getAttribute("uiState");
+    if (!state.dragging) {
+      sigma.getContainer().style.cursor = "grab";
+    }
+  });
+
+  events.register("leaveNode", (sigma) => {
+    const state = sigma.getGraph().getAttribute("uiState");
+    if (!state.dragging) {
+      sigma.getContainer().style.cursor = "initial";
+    }
+  });
+
   // Start dragging
   events.register("downNode", (sigma, payload) => {
+    sigma.getContainer().style.cursor = "grabbing";
     const state = sigma.getGraph().getAttribute("uiState");
     state.dragStart(payload.node);
     if (!sigma.getCustomBBox()) {
@@ -42,6 +57,7 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
 
   // Stop dragging node
   const drop = (sigma: DALSigma) => {
+    sigma.getContainer().style.cursor = "initial";
     const state = sigma.getGraph().getAttribute("uiState");
     const draggedNode = state.dragging;
     if (draggedNode) {
