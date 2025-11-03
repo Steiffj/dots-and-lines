@@ -10,6 +10,7 @@ export class RendererCache<
   KShapes
 > {
   offscreen: OffscreenCanvas;
+  ctx: OffscreenCanvasRenderingContext2D;
   text: LRUCache<KText, ImageBitmap>;
   shapes: LRUCache<KShapes, Path2D>;
 
@@ -27,9 +28,21 @@ export class RendererCache<
     // If not, Sigma may not need to be a field at all
     const { height, width } = this.sigma.getDimensions();
     this.offscreen = offscreenCanvas ?? new OffscreenCanvas(width, height);
+
+    const ctx = this.offscreen.getContext("2d");
+    if (!ctx) {
+      throw new Error(
+        "Render cache's offscreen canvas was initialized with a '2d' context type (or less likely, there's a browser compatibility issue)."
+      );
+    }
+    this.ctx = ctx;
   }
 
-  clear() {
+  clearCanvas() {
+    this.ctx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
+  }
+
+  close() {
     this.text.clear();
     this.shapes.clear();
   }

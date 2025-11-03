@@ -3,7 +3,7 @@ export const THEME_ATTRIBUTE = "data-theme";
 const html = document.getElementsByTagName("html")[0];
 
 const callbacks: Set<DarkModeToggleFn> = new Set();
-export function registerDarkModeToggleHandler(listener: DarkModeToggleFn) {
+export function registerColorSchemeToggleHandler(listener: DarkModeToggleFn) {
   callbacks.add(listener);
 }
 function processCallbacks(mode: "dark" | "light") {
@@ -17,7 +17,7 @@ function processCallbacks(mode: "dark" | "light") {
  */
 export type DarkModeToggleFn = (mode: "dark" | "light") => void;
 
-export function setupDarkModeToggle() {
+export function setupColorSchemeToggle() {
   // Detect when the HTML element's theme data attribute changes
   const observer = new MutationObserver((mutations) => {
     for (const mut of mutations) {

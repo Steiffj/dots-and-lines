@@ -11,6 +11,17 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
     }
   });
 
+  // TODO not working as-is; check what Sigma is doing with its default renderers/event handling
+
+  // events.register("enterNode", (sigma, payload) => {
+  //   const state = sigma.getGraph().getAttribute("uiState");
+  //   if (state.dragging) {
+  //     payload.preventSigmaDefault();
+  //     payload.event.original.preventDefault();
+  //     payload.event.original.stopPropagation();
+  //   }
+  // });
+
   // Update dragging position
   events.register("moveBody", (sigma, payload) => {
     const g = sigma.getGraph();
@@ -55,6 +66,9 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
     if (state.dragging === node) {
       display.highlighted = true;
     }
+    // else if (state.dragging && state.dragging !== node) {
+    //   display.highlighted = false;
+    // }
     return display;
   });
 };

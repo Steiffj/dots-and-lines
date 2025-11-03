@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link href="src/style.css" rel="stylesheet">
+    <script defer type="module" src="src/main.ts"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dots and Lines</title>
   </head>
@@ -13,15 +14,23 @@
       </div>
       <div id="stage" class="absolute w-full h-full transition-colors bg-stone-100 dark:bg-stone-950"></div>
     </div>
-    
-    <!-- Silly visualization theming setup  -->
-    <div id="vis-color-node-default" class="hidden bg-emerald-600 dark:bg-emerald-500"></div>
-    <div id="vis-color-edge-default" class="hidden bg-stone-500 dark:bg-stone-600"></div>
-    <div id="vis-color-text-default" class="hidden bg-stone-950 dark:bg-stone-50"></div>
-    <div id="vis-color-background" class="hidden bg-stone-200 dark:bg-stone-800"></div>
 
-    <!-- TODO: add elements for border radius so it can be applied to canvas and adapted for webgl -->
+    <div id="sigma-settings">
+      <div data-sigma-setting="defaultNodeColor" class="hidden bg-emerald-600 dark:bg-emerald-500"></div>
+      <div data-sigma-setting="defaultEdgeColor" class="hidden bg-stone-500 dark:bg-stone-600"></div>
+      <div data-sigma-setting="labelFont" class="hidden"></div>
+      <div data-sigma-setting="labelSize" class="hidden text-sm"></div>
+      <div data-sigma-setting="labelWeight" class="hidden font-normal"></div>
+      <div data-sigma-setting="labelColor" class="hidden text-stone-900 dark:text-stone-100"></div>
+      <div data-sigma-setting="edgeLabelFont" class="hidden"></div>
+      <div data-sigma-setting="edgeLabelSize" class="hidden text-sm"></div>
+      <div data-sigma-setting="edgeLabelColor" class="hidden text-shadow-stone-900 dark:text-stone-100"></div>
+    </div>
 
-    <script type="module" src="src/main.ts"></script>
+    <div id="sigma-styles">
+      <div data-sigma-style="backgroundColor" class="hidden bg-current dark:bg-current"></div>
+      <div data-sigma-style="borderColor" class="hidden border-stone-600 dark:border-stone-400"></div>
+      <div data-sigma-style="borderRadius" class="hidden rounded-sm"></div>
+    </div>
   </body>
 </html>

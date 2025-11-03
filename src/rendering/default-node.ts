@@ -31,8 +31,16 @@ export class DefaultNodeLabelRenderer {
     );
 
     this.sigma.once("kill", () => {
-      this.cache.clear();
+      this.cache.close();
     });
+  }
+
+  get state() {
+    return this.sigma.getGraph().getAttribute("uiState");
+  }
+
+  get styles() {
+    return this.sigma.getGraph().getAttribute("styles");
   }
 
   readonly drawLabel = (
