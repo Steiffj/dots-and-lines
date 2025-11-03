@@ -1,12 +1,13 @@
 import EdgeCurveProgram from "@sigma/edge-curve";
 import { NodeSquareProgram } from "@sigma/node-square";
-import chroma from "chroma-js";
 import { Sigma } from "sigma";
 import {
   DEFAULT_EDGE_PROGRAM_CLASSES,
   DEFAULT_NODE_PROGRAM_CLASSES,
   type Settings,
 } from "sigma/settings";
+import { registerColorSchemeToggleHandler } from "./color-scheme/color-scheme-sync";
+import { syncSigmaColorScheme } from "./color-scheme/sigma-sync";
 import type {
   DALEdgeAttrs,
   DALGraph,
@@ -22,35 +23,15 @@ import {
   EdgeReducerRegistry,
   NodeReducerRegistry,
 } from "./reducers/reducer.registry";
+import { DefaultNodeLabelRenderer } from "./rendering/default-node";
 
-let host: HTMLElement;
 let sigma: DALSigma;
-const THEME_CONFIG = {
-  node: () =>
-    getComputedStyle(
-      document.getElementById("vis-color-node-default") as HTMLElement
-    ).backgroundColor,
-  edge: () =>
-    getComputedStyle(
-      document.getElementById("vis-color-edge-default") as HTMLElement
-    ).backgroundColor,
-  text: () =>
-    getComputedStyle(
-      document.getElementById("vis-color-text-default") as HTMLElement
-    ).backgroundColor,
-};
 
 export function setupSigma(
   graph: DALGraph,
   container: HTMLElement,
   settings: Partial<Settings>
 ) {
-  const nodeColor = THEME_CONFIG.node();
-  const edgeColor = THEME_CONFIG.edge();
-  const textColor = THEME_CONFIG.text();
-  const nodeRGB = chroma(nodeColor).hex("rgb");
-  const edgeRGB = chroma(edgeColor).hex("rgb");
-
   graph.setAttribute("uiState", new EventState());
   const renderer = new Sigma<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>(
     graph,
@@ -65,16 +46,13 @@ export function setupSigma(
         ...DEFAULT_EDGE_PROGRAM_CLASSES,
         curve: EdgeCurveProgram,
       },
-      defaultNodeColor: nodeRGB,
-      defaultEdgeColor: edgeRGB,
-      labelColor: { color: textColor },
-      edgeLabelColor: { color: textColor },
-      renderEdgeLabels: true,
     }
   );
 
   sigma = renderer;
-  host = container;
+
+  syncSigmaColorScheme(sigma);
+  registerColorSchemeToggleHandler(() => syncSigmaColorScheme(sigma));
 
   const eventRegistry = new EventRegistry(sigma);
   const nodeReducerRegistry = new NodeReducerRegistry(sigma);
@@ -89,6 +67,10 @@ export function setupSigma(
     edge: edgeReducerRegistry,
   });
 
+  const nodeRenderer = new DefaultNodeLabelRenderer(sigma);
+  sigma.setSetting("defaultDrawNodeLabel", nodeRenderer.drawLabel);
+  sigma.setSetting("defaultDrawNodeHover", nodeRenderer.drawHover);
+
   sigma.setSetting("nodeReducer", nodeReducerRegistry.reducer);
   sigma.setSetting("edgeReducer", edgeReducerRegistry.reducer);
 
@@ -100,31 +82,31 @@ export function setupSigma(
   return sigma;
 }
 
-export function sigmaDarkModeToggle() {
-  if (!sigma) {
-    throw new Error("Sigma was not initialized at time of dark mode toggle");
-  }
-  if (!host) {
-    throw new Error(
-      "Sigma container was not initialized at time of dark mode toggle"
-    );
-  }
+// export function sigmaDarkModeToggle() {
+//   if (!sigma) {
+//     throw new Error("Sigma was not initialized at time of dark mode toggle");
+//   }
+//   if (!host) {
+//     throw new Error(
+//       "Sigma container was not initialized at time of dark mode toggle"
+//     );
+//   }
 
-  const nodeColor = THEME_CONFIG.node();
-  const edgeColor = THEME_CONFIG.edge();
-  const textColor = THEME_CONFIG.text();
-  // WebGL rendering (I think?) does not like Oklab color spaces - convert to RGB
-  const nodeRGB = chroma(nodeColor).hex("rgb");
-  const edgeRGB = chroma(edgeColor).hex("rgb");
-  sigma.setSetting("defaultNodeColor", nodeRGB);
-  sigma.setSetting("defaultEdgeColor", edgeRGB);
-  sigma.setSetting("labelColor", {
-    color: textColor,
-  });
-  sigma.setSetting("edgeLabelColor", {
-    color: textColor,
-  });
+//   const nodeColor = THEME_CONFIG.node();
+//   const edgeColor = THEME_CONFIG.edge();
+//   const textColor = THEME_CONFIG.text();
+//   // WebGL rendering (I think?) does not like Oklab color spaces - convert to RGB
+//   const nodeRGB = chroma(nodeColor).hex("rgb");
+//   const edgeRGB = chroma(edgeColor).hex("rgb");
+//   sigma.setSetting("defaultNodeColor", nodeRGB);
+//   sigma.setSetting("defaultEdgeColor", edgeRGB);
+//   sigma.setSetting("labelColor", {
+//     color: textColor,
+//   });
+//   sigma.setSetting("edgeLabelColor", {
+//     color: textColor,
+//   });
 
-  const g = sigma.getGraph();
-  g.setAttribute("text", textColor);
-}
+//   // const g = sigma.getGraph();
+//   // g.setAttribute("text", textColor);
+// }

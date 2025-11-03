@@ -1,11 +1,8 @@
 import "@fontsource/fira-mono";
+import { setupColorSchemeToggle } from "./color-scheme/color-scheme-sync";
 import { PALETTE_HIGH_CONTRAST } from "./color-scheme/palettes";
-import {
-  registerDarkModeToggleHandler,
-  setupDarkModeToggle,
-} from "./dark-mode";
 import { createTestGraph } from "./data";
-import { setupSigma, sigmaDarkModeToggle } from "./sigma";
+import { setupSigma } from "./sigma";
 import "./style.css";
 
 export default (function init() {
@@ -20,10 +17,11 @@ export default (function init() {
     PALETTE_HIGH_CONTRAST
   );
   setupSigma(graph, stage, {
-    labelFont: "Fira Mono",
-    edgeLabelFont: "Fira Mono",
+    // labelFont: "Fira Mono",
+    // edgeLabelFont: "Fira Mono",
+    renderEdgeLabels: true,
   });
 
-  setupDarkModeToggle();
-  registerDarkModeToggleHandler(sigmaDarkModeToggle);
+  setupColorSchemeToggle();
+  // registerDarkModeToggleHandler(sigmaDarkModeToggle);
 })();

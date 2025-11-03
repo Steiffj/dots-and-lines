@@ -1,7 +1,8 @@
 import type Graph from "graphology";
 import type { Sigma } from "sigma";
+import type { Settings } from "sigma/settings";
 import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
-import type { ColorPalette } from "./palettes";
+import type { ColorPalette, SigmaRenderStyles } from "./color-scheme/types";
 import type { EventState } from "./events/event-state";
 
 export type DALSigma = Sigma<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;
@@ -12,8 +13,9 @@ export type DALNodeAttrs = Partial<NodeDisplayData> & {
 };
 export type DALEdgeAttrs = Partial<EdgeDisplayData>;
 export type DALGraphAttrs = {
-  theme?: "dark" | "light";
-  text?: string;
-  palette?: ColorPalette;
   uiState: EventState;
+  styles: SigmaRenderStyles;
+  palette: ColorPalette;
 };
+
+export type DALSettings = Settings<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>;

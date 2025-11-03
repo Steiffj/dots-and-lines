@@ -2,8 +2,8 @@ import chroma from "chroma-js";
 import Graph from "graphology";
 import clusters from "graphology-generators/random/clusters";
 import circlepack from "graphology-layout/circlepack";
-import type { ColorPalette } from "./palettes";
 import type { DALGraph } from "./dal-types";
+import type { ColorPalette } from "./color-scheme/types";
 
 export function graphDirectedLoops(): DALGraph {
   return new Graph({

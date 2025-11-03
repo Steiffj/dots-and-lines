@@ -24,7 +24,7 @@ export class LRUCache<K, V> {
   set(key: K, data: V) {
     if (this.#cache.size >= this.#cap) {
       const evict = this.#cache.keys().next().value;
-      this.#cache.delete(evict);
+      this.#cache.delete(evict as K);
     }
     this.#cache.set(key, data);
   }
