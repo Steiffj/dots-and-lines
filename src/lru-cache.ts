@@ -30,7 +30,12 @@ export class LRUCache<K, V> {
   }
 
   get(key: K) {
-    return this.#cache.get(key);
+    const value = this.#cache.get(key);
+    if (value) {
+      this.#cache.delete(key);
+      this.#cache.set(key, value);
+    }
+    return value;
   }
 
   delete(key: K) {
