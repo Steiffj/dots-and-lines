@@ -5,6 +5,7 @@ type SerializedEventState = {
   selection: string[];
 };
 
+// TODO consider making these lists instead of sets. The affect is probably minimal but will need to profile with supernodes
 type IncidenceEntries = {
   nodes: Set<string>;
   edges: Set<string>;
