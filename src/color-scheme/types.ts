@@ -61,7 +61,7 @@ export type SigmaRenderStyles = {
  */
 export type ColorPalette = {
   name: string;
-  span: [string, string];
+  span: string[];
   edge: string;
   backgroundColor?: string;
 };
