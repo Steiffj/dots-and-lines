@@ -25,6 +25,7 @@ import {
 } from "./reducers/reducer.registry";
 import { DefaultNodeLabelRenderer } from "./rendering/default-node";
 import featHoverLegibility from "./features/hover-legibility";
+import { DefaultEdgeLabelRenderer } from "./rendering/default-edge";
 
 let sigma: DALSigma;
 
@@ -71,6 +72,9 @@ export function setupSigma(
   const nodeRenderer = new DefaultNodeLabelRenderer(sigma);
   sigma.setSetting("defaultDrawNodeLabel", nodeRenderer.drawLabel);
   sigma.setSetting("defaultDrawNodeHover", nodeRenderer.drawHover);
+
+  const edgeRenderer = new DefaultEdgeLabelRenderer(sigma);
+  sigma.setSetting("defaultDrawEdgeLabel", edgeRenderer.drawStraightEdgeLabel);
 
   sigma.setSetting("nodeReducer", nodeReducerRegistry.reducer);
   sigma.setSetting("edgeReducer", edgeReducerRegistry.reducer);
