@@ -38,6 +38,12 @@ export class RendererCache<
     this.ctx = ctx;
   }
 
+  resize(width: number, height: number) {
+    this.ctx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
+    this.offscreen.width = width;
+    this.offscreen.height = height;
+  }
+
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
   }
