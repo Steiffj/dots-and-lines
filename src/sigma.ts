@@ -19,13 +19,14 @@ import { EventState } from "./events/event-state";
 import { EventRegistry } from "./events/event.registry";
 import featCore from "./features/core";
 import featDragAndDrop from "./features/drag-and-drop";
-import {
-  EdgeReducerRegistry,
-  NodeReducerRegistry,
-} from "./reducers/reducer.registry";
-import { DefaultNodeLabelRenderer } from "./rendering/default-node";
 import featHoverLegibility from "./features/hover-legibility";
+import {
+  ReducerRegistry,
+  type EdgeReducerRegistry,
+  type NodeReducerRegistry,
+} from "./reducers/reducer.registry";
 import { DefaultEdgeLabelRenderer } from "./rendering/default-edge";
+import { DefaultNodeLabelRenderer } from "./rendering/default-node";
 
 let sigma: DALSigma;
 
@@ -57,8 +58,8 @@ export function setupSigma(
   registerColorSchemeToggleHandler(() => syncSigmaColorScheme(sigma));
 
   const eventRegistry = new EventRegistry(sigma);
-  const nodeReducerRegistry = new NodeReducerRegistry(sigma);
-  const edgeReducerRegistry = new EdgeReducerRegistry(sigma);
+  const nodeReducerRegistry: NodeReducerRegistry = new ReducerRegistry(sigma);
+  const edgeReducerRegistry: EdgeReducerRegistry = new ReducerRegistry(sigma);
 
   /**
    * Core features must be initialized before setting Sigma's node/edge reducers,
