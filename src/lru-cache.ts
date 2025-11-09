@@ -1,5 +1,6 @@
 export class LRUCache<K, V> {
   #cap: number;
+  #capStack: number[] = [];
   readonly #cache: Map<K, V> = new Map();
   readonly #cleanup?: (key: K, value: V) => void;
 
@@ -19,6 +20,21 @@ export class LRUCache<K, V> {
     if (this.#cache.size <= this.#cap) {
       return;
     }
+  }
+
+  pushCapacity(capacity: number): number {
+    this.#capStack.push(capacity);
+    this.#cap = capacity;
+    return this.#capStack.length;
+  }
+
+  popCapacity(): number {
+    let capacity = this.#cap;
+    if (this.#capStack.length > 1) {
+      capacity = this.#capStack.pop()!;
+      this.#cap = capacity;
+    }
+    return capacity;
   }
 
   set(key: K, data: V) {
