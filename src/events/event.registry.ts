@@ -12,6 +12,8 @@ type Events = {
 export class EventRegistry {
   #listeners: Map<keyof SigmaEvents, Events[keyof SigmaEvents][]> = new Map();
   #features: Map<Events[keyof SigmaEvents], symbol> = new Map();
+  #pausedListeners: Events[keyof SigmaEvents][] = [];
+  #pausedFeatures: symbol[] = [];
 
   constructor(public readonly sigma: DALSigma) {}
 
@@ -36,6 +38,9 @@ export class EventRegistry {
       // As long as it's correct for consumers, it's fine :)
       this.sigma.on(type, (...payload: any) => {
         for (const fn of this.#listeners.get(type)!) {
+          if (this.isPaused(fn)) {
+            continue;
+          }
           fn(...[this.sigma, ...payload]);
         }
       });
@@ -58,5 +63,59 @@ export class EventRegistry {
     }
 
     return false;
+  }
+
+  /**
+   * Temporarily stop an event listener or entire feature from executing.
+   * This method does nothing if the provided listener/feature was already paused.
+   *
+   * @param listenerOrFeature listener/feature to pause
+   */
+  pause(listenerOrFeature: Events[keyof SigmaEvents] | symbol) {
+    if (
+      typeof listenerOrFeature === "symbol" &&
+      !this.#pausedFeatures.includes(listenerOrFeature)
+    ) {
+      this.#pausedFeatures.push(listenerOrFeature);
+    } else if (
+      typeof listenerOrFeature === "function" &&
+      !this.#pausedListeners.includes(listenerOrFeature)
+    ) {
+      this.#pausedListeners.push(listenerOrFeature);
+    }
+  }
+
+  /**
+   * Resume an event listener's or feature's normal execution.
+   * This method does nothing if the provided listener/feature was not paused.
+   *
+   * @param listenerOrFeature listener/feature to resume
+   */
+  resume(listenerOrFeature: Events[keyof SigmaEvents] | symbol) {
+    let i: number;
+    if (
+      typeof listenerOrFeature === "symbol" &&
+      (i = this.#pausedFeatures.indexOf(listenerOrFeature)) > -1
+    ) {
+      this.#pausedFeatures.splice(i, 1);
+    } else if (
+      typeof listenerOrFeature === "function" &&
+      (i = this.#pausedListeners.indexOf(listenerOrFeature)) > -1
+    ) {
+      this.#pausedListeners.splice(i, 1);
+    }
+  }
+
+  /**
+   * Check whether an event listener is currently paused.
+   *
+   * @param listener event listener to check
+   * @returns true if the listener is paused
+   */
+  isPaused(listener: Events[keyof SigmaEvents]) {
+    return (
+      this.#pausedListeners.includes(listener) ||
+      this.#pausedFeatures.includes(this.#features.get(listener)!)
+    );
   }
 }
