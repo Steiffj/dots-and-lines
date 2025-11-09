@@ -17,9 +17,9 @@ import type {
 } from "./dal-types";
 import { EventState } from "./events/event-state";
 import { EventRegistry } from "./events/event.registry";
-import featCore from "./features/core";
-import featDragAndDrop from "./features/drag-and-drop";
-import featHoverLegibility from "./features/hover-legibility";
+import featCore from "./features/core.feat";
+import featDragAndDrop from "./features/drag-and-drop.feat";
+import featHoverLegibility from "./features/hover-legibility.feat";
 import {
   ReducerRegistry,
   type EdgeReducerRegistry,
