@@ -17,6 +17,9 @@ Need a way to declare interactions between multiple features without the individ
     - Flag to indicate whether a feature is active.
     - Lists of nodes/edges affected by the 
     - Node/edge lists can be used by renderers/reducers and for passing to Sigma's lifecycle scheduling.
+- Feature start/end functions.
+- Provide an option to toggle Sigma's settings while a feature is active.
+    - Automatically restore affected settings when feature is no longer active. May want to store previous setting values in stacks?
 
 ## Renderer Caching Optimizations
 - Move offscreen canvas into web workers and transfer cached resources back to main thread.
