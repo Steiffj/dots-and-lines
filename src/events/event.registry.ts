@@ -11,10 +11,12 @@ type Events = {
 
 export class EventRegistry {
   #listeners: Map<keyof SigmaEvents, Events[keyof SigmaEvents][]> = new Map();
+  #features: Map<Events[keyof SigmaEvents], symbol> = new Map();
 
   constructor(public readonly sigma: DALSigma) {}
 
   register<Event extends keyof SigmaEvents>(
+    feature: symbol,
     type: Event,
     listener: Events[Event]
   ) {
@@ -26,6 +28,7 @@ export class EventRegistry {
     }
 
     listeners.push(listener);
+    this.#features.set(listener, feature);
     if (addToSigma) {
       this.#listeners.set(type, listeners);
 

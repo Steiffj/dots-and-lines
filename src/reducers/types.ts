@@ -6,20 +6,18 @@ export type PooledNodeReducer<
   N extends Attributes,
   E extends Attributes,
   A extends Attributes
-> = (
-  node: string,
-  data: N,
-  pooled: Partial<NodeDisplayData> | undefined,
-  sigma: Sigma<N, E, A>
-) => Partial<NodeDisplayData>;
+> = PooledReducer<N, E, A, Partial<NodeDisplayData>, N>;
 
 export type PooledEdgeReducer<
   N extends Attributes,
   E extends Attributes,
   A extends Attributes
-> = (
-  edge: string,
-  data: E,
-  pooled: Partial<DisplayData> | undefined,
-  sigma: Sigma<N, E, A>
-) => Partial<DisplayData>;
+> = PooledReducer<N, E, A, Partial<DisplayData>, E>;
+
+export type PooledReducer<
+  N extends Attributes,
+  E extends Attributes,
+  A extends Attributes,
+  R extends Partial<DisplayData>,
+  D extends N | E
+> = (key: string, data: D, pooled: R, sigma: Sigma<N, E, A>) => Partial<R>;
