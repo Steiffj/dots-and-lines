@@ -1,22 +1,24 @@
 import type { FeatureRegistration } from "./types";
 
+const FEAT = Symbol("hover legibility");
+export const FEAT_HOVER_LEGIBILITY = FEAT;
 const featHoverLegibility: FeatureRegistration = (events, reducers) => {
   // Set hover state for nodes
-  events.register("enterNode", (sigma, payload) => {
+  events.register(FEAT, "enterNode", (sigma, payload) => {
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     state.hoverStart(payload.node, "node", g);
   });
 
   // Set hover state for edges
-  events.register("enterEdge", (sigma, payload) => {
+  events.register(FEAT, "enterEdge", (sigma, payload) => {
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     state.hoverStart(payload.edge, "edge", g);
   });
 
   // Clear hover state for nodes
-  events.register("leaveNode", (sigma, payload) => {
+  events.register(FEAT, "leaveNode", (sigma, payload) => {
     const state = sigma.getGraph().getAttribute("uiState");
     const incident = state.hoverEnd();
     sigma.scheduleRefresh({
@@ -28,19 +30,21 @@ const featHoverLegibility: FeatureRegistration = (events, reducers) => {
   });
 
   // Clear hover state for edges
-  events.register("leaveEdge", (sigma, payload) => {
+  events.register(FEAT, "leaveEdge", (sigma, payload) => {
     const state = sigma.getGraph().getAttribute("uiState");
     const incident = state.hoverEnd();
-    sigma.scheduleRefresh({
-      partialGraph: {
-        nodes: [...incident.nodes],
-        edges: [...incident.edges, payload.edge],
-      },
-    });
+    if (incident) {
+      sigma.scheduleRefresh({
+        partialGraph: {
+          nodes: [...incident.nodes],
+          edges: [...incident.edges, payload.edge],
+        },
+      });
+    }
   });
 
   // Show relevant edge labels and hide others
-  reducers.edge.register((edge, data, pooled, sigma) => {
+  reducers.edge.register(FEAT, (edge, data, pooled, sigma) => {
     let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
@@ -53,17 +57,17 @@ const featHoverLegibility: FeatureRegistration = (events, reducers) => {
     const thisEdgeHovered = hovered.type === "edge" && edge === hovered.key;
     const incidentNodeHovered = incident.nodes.has(hovered.key);
     if (thisEdgeHovered || incidentNodeHovered) {
-      display.label = display.label ?? data.label;
+      display.label = display.label ?? data.label ?? null;
       display.forceLabel = true;
     } else {
-      display.label = undefined;
+      display.label = null;
     }
 
     return display;
   });
 
   // Show relevant node labels and hide others
-  reducers.node.register((node, _, pooled, sigma) => {
+  reducers.node.register(FEAT, (node, _, pooled, sigma) => {
     let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
@@ -93,6 +97,8 @@ const featHoverLegibility: FeatureRegistration = (events, reducers) => {
 
     return display;
   });
+
+  return FEAT;
 };
 
 export default featHoverLegibility;

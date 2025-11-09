@@ -6,15 +6,17 @@ import type { FeatureRegistration } from "./types";
  */
 const originalSettings: Partial<DALSettings> = {};
 
+const FEAT = Symbol("drag and drop");
+export const FEAT_DRAG_AND_DROP = FEAT;
 const featDragAndDrop: FeatureRegistration = (events, reducers) => {
-  events.register("enterNode", (sigma) => {
+  events.register(FEAT, "enterNode", (sigma) => {
     const state = sigma.getGraph().getAttribute("uiState");
     if (!state.drag.key) {
       sigma.getContainer().style.cursor = "grab";
     }
   });
 
-  events.register("leaveNode", (sigma) => {
+  events.register(FEAT, "leaveNode", (sigma) => {
     const state = sigma.getGraph().getAttribute("uiState");
     if (!state.drag.key) {
       sigma.getContainer().style.cursor = "initial";
@@ -22,7 +24,7 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   });
 
   // Start dragging
-  events.register("downNode", (sigma, payload) => {
+  events.register(FEAT, "downNode", (sigma, payload) => {
     sigma.getContainer().style.cursor = "grabbing";
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
@@ -33,7 +35,7 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
   });
 
   // Update dragging position
-  events.register("moveBody", (sigma, payload) => {
+  events.register(FEAT, "moveBody", (sigma, payload) => {
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     const draggedNode = state.drag.key;
@@ -97,11 +99,11 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
     });
   };
 
-  events.register("upNode", drop);
-  events.register("upStage", drop);
+  events.register(FEAT, "upNode", drop);
+  events.register(FEAT, "upStage", drop);
 
   // Keep dragging node highlighted to prevent flashing during fast dragging
-  reducers.node.register((node, _, pooled, sigma) => {
+  reducers.node.register(FEAT, (node, _, pooled, sigma) => {
     let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
@@ -118,18 +120,22 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
     }
 
     const incident = state.drag.incident!;
-    if (incident.nodes.has(node)) {
+    const maxVisibleAdjacentNodeLabels = 60; // TODO move to config somewhere
+    if (
+      incident.nodes.has(node) &&
+      incident.nodes.size <= maxVisibleAdjacentNodeLabels
+    ) {
       display.highlighted = true;
       display.forceLabel = true;
     } else {
-      display.label = undefined;
+      display.label = null;
       display.highlighted = false;
     }
 
     return display;
   });
 
-  reducers.edge.register((edge, data, pooled, sigma) => {
+  reducers.edge.register(FEAT, (edge, data, pooled, sigma) => {
     let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
@@ -139,14 +145,16 @@ const featDragAndDrop: FeatureRegistration = (events, reducers) => {
 
     const incident = state.drag.incident!;
     if (incident.edges.has(edge)) {
-      display.label = display.label ?? data.label;
+      display.label = display.label ?? data.label ?? null;
       display.forceLabel = true;
     } else {
-      display.label = undefined;
+      display.label = null;
     }
 
     return display;
   });
+
+  return FEAT;
 };
 
 export default featDragAndDrop;
