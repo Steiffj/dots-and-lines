@@ -50,10 +50,9 @@ export class ReducerRegistry<
           "Reducers must mutate the pooled display data rather than create a new object."
         );
       }
-      pooled = displayData; // TODO this is redundant if things work as expected
     }
 
-    if (!pooled) {
+    if (!pooled || Object.keys(pooled).length === 0) {
       throw new Error("Pooled display data was not initialized!");
     }
 
