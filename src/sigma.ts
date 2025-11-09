@@ -17,7 +17,6 @@ import type {
 } from "./dal-types";
 import { EventState } from "./events/event-state";
 import { EventRegistry } from "./events/event.registry";
-import featCore from "./features/core.feat";
 import featDragAndDrop from "./features/drag-and-drop.feat";
 import featHoverLegibility from "./features/hover-legibility.feat";
 import {
@@ -27,6 +26,7 @@ import {
 } from "./reducers/reducer.registry";
 import { DefaultEdgeLabelRenderer } from "./rendering/default-edge";
 import { DefaultNodeLabelRenderer } from "./rendering/default-node";
+import { FeatCore } from "./features/core.feat";
 
 let sigma: DALSigma;
 
@@ -65,10 +65,8 @@ export function setupSigma(
    * Core features must be initialized before setting Sigma's node/edge reducers,
    * otherwise object pool and event state won't be available.
    */
-  featCore(eventRegistry, {
-    node: nodeReducerRegistry,
-    edge: edgeReducerRegistry,
-  });
+  const featCore = new FeatCore(nodeReducerRegistry, edgeReducerRegistry);
+  featCore.init();
 
   const nodeRenderer = new DefaultNodeLabelRenderer(sigma);
   sigma.setSetting("defaultDrawNodeLabel", nodeRenderer.drawLabel);
