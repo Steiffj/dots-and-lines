@@ -104,19 +104,18 @@ const featDragAndDrop: FeatureDefinition = (events, reducers) => {
 
   // Keep dragging node highlighted to prevent flashing during fast dragging
   reducers.node.register(FEAT, (node, _, pooled, sigma) => {
-    let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
 
     const draggedNode = state.drag.key;
     if (!draggedNode) {
-      return display;
+      return pooled;
     }
 
     if (draggedNode === node) {
-      display.highlighted = true;
-      display.forceLabel = true;
-      return display;
+      pooled.highlighted = true;
+      pooled.forceLabel = true;
+      return pooled;
     }
 
     const incident = state.drag.incident!;
@@ -125,33 +124,32 @@ const featDragAndDrop: FeatureDefinition = (events, reducers) => {
       incident.nodes.has(node) &&
       incident.nodes.size <= maxVisibleAdjacentNodeLabels
     ) {
-      display.highlighted = true;
-      display.forceLabel = true;
+      pooled.highlighted = true;
+      pooled.forceLabel = true;
     } else {
-      display.label = null;
-      display.highlighted = false;
+      pooled.label = null;
+      pooled.highlighted = false;
     }
 
-    return display;
+    return pooled;
   });
 
   reducers.edge.register(FEAT, (edge, data, pooled, sigma) => {
-    let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     if (!state.drag.key) {
-      return display;
+      return pooled;
     }
 
     const incident = state.drag.incident!;
     if (incident.edges.has(edge)) {
-      display.label = display.label ?? data.label ?? null;
-      display.forceLabel = true;
+      pooled.label = pooled.label ?? data.label ?? null;
+      pooled.forceLabel = true;
     } else {
-      display.label = null;
+      pooled.label = null;
     }
 
-    return display;
+    return pooled;
   });
 
   return FEAT;
