@@ -1,8 +1,8 @@
-import type { FeatureRegistration } from "./types";
+import type { FeatureDefinition } from "./types";
 
 const FEAT = Symbol("hover legibility");
 export const FEAT_HOVER_LEGIBILITY = FEAT;
-const featHoverLegibility: FeatureRegistration = (events, reducers) => {
+const featHoverLegibility: FeatureDefinition = (events, reducers) => {
   // Set hover state for nodes
   events.register(FEAT, "enterNode", (sigma, payload) => {
     const g = sigma.getGraph();

@@ -1,5 +1,5 @@
 import type { DALSettings, DALSigma } from "../dal-types";
-import type { FeatureRegistration } from "./types";
+import type { FeatureDefinition } from "./types";
 
 /**
  * @todo will want a utility to manage this for similar situations
@@ -8,7 +8,7 @@ const originalSettings: Partial<DALSettings> = {};
 
 const FEAT = Symbol("drag and drop");
 export const FEAT_DRAG_AND_DROP = FEAT;
-const featDragAndDrop: FeatureRegistration = (events, reducers) => {
+const featDragAndDrop: FeatureDefinition = (events, reducers) => {
   events.register(FEAT, "enterNode", (sigma) => {
     const state = sigma.getGraph().getAttribute("uiState");
     if (!state.drag.key) {

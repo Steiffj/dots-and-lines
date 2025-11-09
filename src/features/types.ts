@@ -4,7 +4,7 @@ import type {
   NodeReducerRegistry,
 } from "../reducers/reducer.registry";
 
-export type FeatureRegistration = (
+export type FeatureDefinition = (
   events: EventRegistry,
   reducers: {
     node: NodeReducerRegistry;
