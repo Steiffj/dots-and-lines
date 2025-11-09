@@ -5,6 +5,7 @@ type Params<E extends keyof SigmaEvents> = [
   sigma: DALSigma,
   ...Parameters<SigmaEvents[E]>
 ];
+
 type Events = {
   [E in keyof SigmaEvents]: (...args: Params<E>) => void;
 };
@@ -17,11 +18,31 @@ export class EventRegistry {
 
   constructor(public readonly sigma: DALSigma) {}
 
+  /**
+   * Adds a Sigma event listener function to the registry.
+   *
+   * This method internally attaches listeners to the registry's connected Sigma instance.
+   * Consumers do not need to (and typically should not) call `Sigma.on()`, `Sigma.addEventListener()`, etc. directly.
+   * @param feature visualization/user interactivity feature the event listener is a part of
+   * @param type Sigma event name
+   * @param listener Sigma event listener (callback function) to add
+   * @throw an error if the provided listener function was previously registered under a different feature
+   */
   register<Event extends keyof SigmaEvents>(
     feature: symbol,
     type: Event,
     listener: Events[Event]
   ) {
+    // There might be a valid use case here but supporting it overly complicates the callback/feature mapping for now
+    const existingFeat = this.#features.get(listener);
+    if (existingFeat && existingFeat !== feature) {
+      throw new Error(
+        `Attempted to register event listener under feature '${String(
+          feature
+        )}' but was previously registered under feature '${String(feature)}'`
+      );
+    }
+
     let addToSigma = false;
     let listeners = this.#listeners.get(type);
     if (!listeners) {
@@ -31,6 +52,10 @@ export class EventRegistry {
 
     listeners.push(listener);
     this.#features.set(listener, feature);
+
+    // Add higher-order event callback function to Sigma the first time a listener of this type (event name) is registered.
+    // This calls registered listeners and manages skipping paused listeners by feature or by individual callback function.
+    // TODO also handle listener sorting based on externally provided configuration.
     if (addToSigma) {
       this.#listeners.set(type, listeners);
 
@@ -47,6 +72,12 @@ export class EventRegistry {
     }
   }
 
+  /**
+   * Removes a Sigma event listener from the registry.
+   * @param type Sigma event name
+   * @param listener Sigma event listener (callback function) to remove
+   * @returns true if the listener was removed from the registry
+   */
   unregister<Event extends keyof SigmaEvents>(
     type: Event,
     listener: Events[Event]
@@ -59,6 +90,7 @@ export class EventRegistry {
     let i = listeners.indexOf(listener);
     if (i >= 0) {
       listeners.splice(i, 1);
+      this.#features.delete(listener);
       return true;
     }
 
@@ -66,9 +98,27 @@ export class EventRegistry {
   }
 
   /**
+   * Removes all Sigma event listeners from the registry for a specified feature.
+   * @param feature visualization/user interactivity feature to remove
+   */
+  unregisterFeature(feature: symbol) {
+    const listenersToRemove: [keyof Events, Events[keyof Events]][] = [];
+    for (const [type, listeners] of this.#listeners.entries()) {
+      for (const listener of listeners) {
+        if (this.#features.get(listener) === feature) {
+          listenersToRemove.push([type, listener]);
+        }
+      }
+    }
+
+    for (const [type, listener] of listenersToRemove) {
+      this.unregister(type, listener);
+    }
+  }
+
+  /**
    * Temporarily stop an event listener or entire feature from executing.
    * This method does nothing if the provided listener/feature was already paused.
-   *
    * @param listenerOrFeature listener/feature to pause
    */
   pause(listenerOrFeature: Events[keyof SigmaEvents] | symbol) {
@@ -88,7 +138,6 @@ export class EventRegistry {
   /**
    * Resume an event listener's or feature's normal execution.
    * This method does nothing if the provided listener/feature was not paused.
-   *
    * @param listenerOrFeature listener/feature to resume
    */
   resume(listenerOrFeature: Events[keyof SigmaEvents] | symbol) {
