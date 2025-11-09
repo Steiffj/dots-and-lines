@@ -6,16 +6,15 @@ export const nodeReducerCommon: PooledNodeReducer<
   DALEdgeAttrs,
   DALGraphAttrs
 > = (_, data, pooled) => {
-  const display = pooled ?? {};
-  display.color = data.color;
-  display.forceLabel = data.forceLabel;
-  display.hidden = data.hidden;
-  display.highlighted = data.highlighted;
-  display.label = data.label;
-  display.size = data.size ?? 5;
-  display.type = data.type;
-  display.x = data.x;
-  display.y = data.y;
-  display.zIndex = data.zIndex;
-  return display;
+  pooled.color = data.color;
+  pooled.forceLabel = data.forceLabel;
+  pooled.hidden = data.hidden;
+  pooled.highlighted = data.highlighted;
+  pooled.label = data.label;
+  pooled.size = data.size ?? 5;
+  pooled.type = data.type;
+  pooled.x = data.x;
+  pooled.y = data.y;
+  pooled.zIndex = data.zIndex;
+  return pooled;
 };

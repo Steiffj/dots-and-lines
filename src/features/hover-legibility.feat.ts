@@ -45,57 +45,55 @@ const featHoverLegibility: FeatureDefinition = (events, reducers) => {
 
   // Show relevant edge labels and hide others
   reducers.edge.register(FEAT, (edge, data, pooled, sigma) => {
-    let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     const hovered = state.hovered;
     if (!hovered.key) {
-      return display;
+      return pooled;
     }
 
     const incident = hovered.incident!;
     const thisEdgeHovered = hovered.type === "edge" && edge === hovered.key;
     const incidentNodeHovered = incident.nodes.has(hovered.key);
     if (thisEdgeHovered || incidentNodeHovered) {
-      display.label = display.label ?? data.label ?? null;
-      display.forceLabel = true;
+      pooled.label = pooled.label ?? data.label ?? null;
+      pooled.forceLabel = true;
     } else {
-      display.label = null;
+      pooled.label = null;
     }
 
-    return display;
+    return pooled;
   });
 
   // Show relevant node labels and hide others
   reducers.node.register(FEAT, (node, _, pooled, sigma) => {
-    let display = pooled ?? {};
     const g = sigma.getGraph();
     const state = g.getAttribute("uiState");
     const hovered = state.hovered;
     if (!hovered.key) {
-      return display;
+      return pooled;
     }
 
     const incident = hovered.incident!;
     const thisNodeHovered = hovered.type === "node" && node === hovered.key;
     const incidentEdgeHovered = incident.nodes.has(node);
     if (thisNodeHovered || incidentEdgeHovered) {
-      display.highlighted = true;
-      display.forceLabel = true;
-      return display;
+      pooled.highlighted = true;
+      pooled.forceLabel = true;
+      return pooled;
     }
 
     if (hovered.type !== "node") {
-      return display;
+      return pooled;
     }
 
     const neighbors = g.neighbors(hovered.key);
     if (neighbors.includes(node)) {
-      display.highlighted = true;
-      display.forceLabel = true;
+      pooled.highlighted = true;
+      pooled.forceLabel = true;
     }
 
-    return display;
+    return pooled;
   });
 
   return FEAT;
