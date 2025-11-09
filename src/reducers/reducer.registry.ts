@@ -1,8 +1,8 @@
 import type { Attributes } from "graphology-types";
 import type { Sigma } from "sigma";
 import type { DisplayData, NodeDisplayData } from "sigma/types";
+import type { DALEdgeAttrs, DALGraphAttrs, DALNodeAttrs } from "../dal-types";
 import type { PooledReducer } from "./types";
-import type { DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs } from "../dal-types";
 
 export type NodeReducerRegistry = ReducerRegistry<
   DALNodeAttrs,
@@ -33,12 +33,17 @@ export class ReducerRegistry<
   private readonly pool: Map<string, Partial<R>> = new Map();
   #reducers: PooledReducer<N, E, A, R, D>[] = [];
   #features: Map<PooledReducer<N, E, A, R, D>, symbol> = new Map();
+  #pausedReducers: PooledReducer<N, E, A, R, D>[] = [];
+  #pausedFeatures: symbol[] = [];
 
   constructor(public readonly sigma: Sigma<N, E, A>) {}
 
   reducer = (key: string, data: D): R => {
     let pooled = this.pool.get(key) ?? {};
     for (const reducer of this.#reducers) {
+      if (this.isPaused(reducer)) {
+        continue;
+      }
       const displayData = reducer(key, data, pooled as R, this.sigma);
       if (displayData !== pooled) {
         throw new Error(
@@ -101,5 +106,59 @@ export class ReducerRegistry<
     for (const reducer of reducers) {
       this.unregister(reducer);
     }
+  }
+
+  /**
+   * Temporarily stop an event listener or entire feature from executing.
+   * This method does nothing if the provided listener/feature was already paused.
+   *
+   * @param reducerOrFeature listener/feature to pause
+   */
+  pause(reducerOrFeature: PooledReducer<N, E, A, R, D> | symbol) {
+    if (
+      typeof reducerOrFeature === "symbol" &&
+      !this.#pausedFeatures.includes(reducerOrFeature)
+    ) {
+      this.#pausedFeatures.push(reducerOrFeature);
+    } else if (
+      typeof reducerOrFeature === "function" &&
+      !this.#pausedReducers.includes(reducerOrFeature)
+    ) {
+      this.#pausedReducers.push(reducerOrFeature);
+    }
+  }
+
+  /**
+   * Resume an event listener's or feature's normal execution.
+   * This method does nothing if the provided listener/feature was not paused.
+   *
+   * @param reducerOrFeature listener/feature to resume
+   */
+  resume(reducerOrFeature: PooledReducer<N, E, A, R, D> | symbol) {
+    let i: number;
+    if (
+      typeof reducerOrFeature === "symbol" &&
+      (i = this.#pausedFeatures.indexOf(reducerOrFeature)) > -1
+    ) {
+      this.#pausedFeatures.splice(i, 1);
+    } else if (
+      typeof reducerOrFeature === "function" &&
+      (i = this.#pausedReducers.indexOf(reducerOrFeature)) > -1
+    ) {
+      this.#pausedReducers.splice(i, 1);
+    }
+  }
+
+  /**
+   * Check whether an event listener is currently paused.
+   *
+   * @param reducer event listener to check
+   * @returns true if the listener is paused
+   */
+  isPaused(reducer: PooledReducer<N, E, A, R, D>) {
+    return (
+      this.#pausedReducers.includes(reducer) ||
+      this.#pausedFeatures.includes(this.#features.get(reducer)!)
+    );
   }
 }
