@@ -1,5 +1,6 @@
 import { type SigmaEvents } from "sigma/types";
 import type { DALSigma } from "../dal-types";
+import { FeatureActivityManager } from "../features/feature-activity-manager";
 
 type Params<E extends keyof SigmaEvents> = [
   sigma: DALSigma,
@@ -15,6 +16,36 @@ export class EventRegistry {
   #features: Map<Events[keyof SigmaEvents], symbol> = new Map();
   #pausedListeners: Events[keyof SigmaEvents][] = [];
   #pausedFeatures: symbol[] = [];
+  #activityMgr = new FeatureActivityManager();
+
+  configure(active: symbol, disabled: symbol) {
+    this.#activityMgr.configure([active, disabled]);
+  }
+
+  setActive(feature: symbol) {
+    this.#activityMgr.pushActive(feature);
+  }
+
+  setInactive(feature: symbol) {
+    this.#activityMgr.removeActive(feature);
+  }
+
+  isDisabled(listener: Events[keyof SigmaEvents]) {
+    const feat = this.#features.get(listener);
+    if (!feat) {
+      throw new Error(
+        `Missing listener/feature mapping for feature ${String(
+          feat
+        )} in event registry`
+      );
+    }
+
+    return this.#activityMgr.isDisabled(feat);
+  }
+
+  private shouldSkip(listener: Events[keyof SigmaEvents]) {
+    return this.isPaused(listener) || this.isDisabled(listener);
+  }
 
   constructor(public readonly sigma: DALSigma) {}
 
@@ -63,7 +94,7 @@ export class EventRegistry {
       // As long as it's correct for consumers, it's fine :)
       this.sigma.on(type, (...payload: any) => {
         for (const fn of this.#listeners.get(type)!) {
-          if (this.isPaused(fn)) {
+          if (this.shouldSkip(fn)) {
             continue;
           }
           fn(...[this.sigma, ...payload]);

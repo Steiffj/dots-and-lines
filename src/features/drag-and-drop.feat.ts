@@ -23,6 +23,7 @@ type State = FeatureState &
         dragging?: undefined;
       }
   );
+
 export class FeatDragAndDrop implements Feature, FeatureInit {
   readonly id = Symbol("drag and drop");
   state: State = { active: false };
@@ -54,6 +55,10 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
       nodes: [dragging, ...g.neighbors(dragging)],
       edges: g.edges(dragging),
     };
+
+    this.events.setActive(this.id);
+    this.nodeReducers.setActive(this.id);
+    this.edgeReducers.setActive(this.id);
     return { ...this.state };
   }
 
@@ -62,6 +67,10 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
     this.state = {
       active: false,
     };
+
+    this.events.setInactive(this.id);
+    this.nodeReducers.setInactive(this.id);
+    this.edgeReducers.setInactive(this.id);
     return state;
   }
 
@@ -96,8 +105,6 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
     // Update dragging position
     events.register(this.id, "moveBody", (sigma, payload) => {
       const g = sigma.getGraph();
-      // const state = g.getAttribute("uiState");
-      // const draggedNode = state.drag.key;
       if (!this.state.active) {
         return;
       }

@@ -92,34 +92,10 @@ export function setupSigma(
   );
   featDragAndDrop.init();
 
+  // TODO name 'configure' something more meaningful
+  eventRegistry.configure(featDragAndDrop.id, featHoverLegibility.id);
+  nodeReducerRegistry.configure(featDragAndDrop.id, featHoverLegibility.id);
+  edgeReducerRegistry.configure(featDragAndDrop.id, featHoverLegibility.id);
+
   return sigma;
 }
-
-// export function sigmaDarkModeToggle() {
-//   if (!sigma) {
-//     throw new Error("Sigma was not initialized at time of dark mode toggle");
-//   }
-//   if (!host) {
-//     throw new Error(
-//       "Sigma container was not initialized at time of dark mode toggle"
-//     );
-//   }
-
-//   const nodeColor = THEME_CONFIG.node();
-//   const edgeColor = THEME_CONFIG.edge();
-//   const textColor = THEME_CONFIG.text();
-//   // WebGL rendering (I think?) does not like Oklab color spaces - convert to RGB
-//   const nodeRGB = chroma(nodeColor).hex("rgb");
-//   const edgeRGB = chroma(edgeColor).hex("rgb");
-//   sigma.setSetting("defaultNodeColor", nodeRGB);
-//   sigma.setSetting("defaultEdgeColor", edgeRGB);
-//   sigma.setSetting("labelColor", {
-//     color: textColor,
-//   });
-//   sigma.setSetting("edgeLabelColor", {
-//     color: textColor,
-//   });
-
-//   // const g = sigma.getGraph();
-//   // g.setAttribute("text", textColor);
-// }
