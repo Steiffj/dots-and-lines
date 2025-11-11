@@ -19,7 +19,6 @@ import { EventState } from "./events/event-state";
 import { EventRegistry } from "./events/event.registry";
 import { FeatCore } from "./features/core.feat";
 import { FeatDragAndDrop } from "./features/drag-and-drop.feat";
-import featHoverLegibility from "./features/hover-legibility.feat";
 import {
   ReducerRegistry,
   type EdgeReducerRegistry,
@@ -27,6 +26,7 @@ import {
 } from "./reducers/reducer.registry";
 import { DefaultEdgeLabelRenderer } from "./rendering/default-edge";
 import { DefaultNodeLabelRenderer } from "./rendering/default-node";
+import { FeatHoverLegibility } from "./features/hover-legibility.feat";
 
 let sigma: DALSigma;
 
@@ -78,10 +78,12 @@ export function setupSigma(
   sigma.setSetting("nodeReducer", nodeReducerRegistry.reducer);
   sigma.setSetting("edgeReducer", edgeReducerRegistry.reducer);
 
-  featHoverLegibility(eventRegistry, {
-    node: nodeReducerRegistry,
-    edge: edgeReducerRegistry,
-  });
+  const featHoverLegibility = new FeatHoverLegibility(
+    eventRegistry,
+    nodeReducerRegistry,
+    edgeReducerRegistry
+  );
+  featHoverLegibility.init();
 
   const featDragAndDrop = new FeatDragAndDrop(
     eventRegistry,
