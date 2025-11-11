@@ -36,10 +36,6 @@ export class DefaultNodeLabelRenderer {
     });
   }
 
-  get state() {
-    return this.sigma.getGraph().getAttribute("uiState");
-  }
-
   get styles() {
     return this.sigma.getGraph().getAttribute("styles");
   }
@@ -94,12 +90,6 @@ export class DefaultNodeLabelRenderer {
     settings: DALSettings
   ): void => {
     // TODO add a dedicated renderer type for dragging nodes
-    // const state = this.state;
-    // if (state.dragging) {
-    //   this.drawLabel(ctx, data, settings);
-    //   return;
-    // }
-
     const styles = this.styles;
     const size = settings.labelSize,
       font = settings.labelFont,

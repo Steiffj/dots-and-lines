@@ -15,10 +15,10 @@ import type {
   DALNodeAttrs,
   DALSigma,
 } from "./dal-types";
-import { EventState } from "./events/event-state";
 import { EventRegistry } from "./events/event.registry";
 import { FeatCore } from "./features/core.feat";
 import { FeatDragAndDrop } from "./features/drag-and-drop.feat";
+import { FeatHoverLegibility } from "./features/hover-legibility.feat";
 import {
   ReducerRegistry,
   type EdgeReducerRegistry,
@@ -26,7 +26,6 @@ import {
 } from "./reducers/reducer.registry";
 import { DefaultEdgeLabelRenderer } from "./rendering/default-edge";
 import { DefaultNodeLabelRenderer } from "./rendering/default-node";
-import { FeatHoverLegibility } from "./features/hover-legibility.feat";
 
 let sigma: DALSigma;
 
@@ -35,7 +34,6 @@ export function setupSigma(
   container: HTMLElement,
   settings: Partial<Settings>
 ) {
-  graph.setAttribute("uiState", new EventState());
   const renderer = new Sigma<DALNodeAttrs, DALEdgeAttrs, DALGraphAttrs>(
     graph,
     container,
