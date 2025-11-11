@@ -17,7 +17,8 @@ import type {
 } from "./dal-types";
 import { EventState } from "./events/event-state";
 import { EventRegistry } from "./events/event.registry";
-import featDragAndDrop from "./features/drag-and-drop.feat";
+import { FeatCore } from "./features/core.feat";
+import { FeatDragAndDrop } from "./features/drag-and-drop.feat";
 import featHoverLegibility from "./features/hover-legibility.feat";
 import {
   ReducerRegistry,
@@ -26,7 +27,6 @@ import {
 } from "./reducers/reducer.registry";
 import { DefaultEdgeLabelRenderer } from "./rendering/default-edge";
 import { DefaultNodeLabelRenderer } from "./rendering/default-node";
-import { FeatCore } from "./features/core.feat";
 
 let sigma: DALSigma;
 
@@ -82,10 +82,13 @@ export function setupSigma(
     node: nodeReducerRegistry,
     edge: edgeReducerRegistry,
   });
-  featDragAndDrop(eventRegistry, {
-    node: nodeReducerRegistry,
-    edge: edgeReducerRegistry,
-  });
+
+  const featDragAndDrop = new FeatDragAndDrop(
+    eventRegistry,
+    nodeReducerRegistry,
+    edgeReducerRegistry
+  );
+  featDragAndDrop.init();
 
   return sigma;
 }
