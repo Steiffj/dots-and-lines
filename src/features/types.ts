@@ -17,6 +17,7 @@ export type FeatureState =
     }
   | {
       active: true;
+      refresh?: boolean;
       nodes?: string[];
       edges?: string[];
     };
@@ -33,8 +34,6 @@ export interface Feature {
   readonly id: symbol;
   readonly state: FeatureState;
   readonly active: boolean;
-  start(): FeatureState;
-  stop(): FeatureState;
 }
 
 export interface FeatureInit {

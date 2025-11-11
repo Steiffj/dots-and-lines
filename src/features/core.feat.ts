@@ -8,11 +8,11 @@ import type {
   EdgeReducerRegistry,
   NodeReducerRegistry,
 } from "../reducers/reducer.registry";
-import type { Feature, FeatureInit, FeatureState } from "./types";
+import type { Feature, FeatureInit } from "./types";
 
 export class FeatCore implements Feature, FeatureInit {
   readonly id = Symbol("core");
-  state: FeatureState = { active: true };
+  state = { active: true };
   get active() {
     return true;
   }
@@ -21,13 +21,6 @@ export class FeatCore implements Feature, FeatureInit {
     private readonly nodeReducers: NodeReducerRegistry,
     private readonly edgeReducers: EdgeReducerRegistry
   ) {}
-
-  start() {
-    return this.state;
-  }
-  stop() {
-    return this.state;
-  }
 
   init(): Feature {
     this.nodeReducers.register(this.id, nodeReducerCommon);
