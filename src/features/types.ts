@@ -1,9 +1,3 @@
-import type { EventRegistry } from "../events/event.registry";
-import type {
-  EdgeReducerRegistry,
-  NodeReducerRegistry,
-} from "../reducers/reducer.registry";
-
 /**
  * @todo handle:
  * - Feature activity start/end methods
@@ -21,14 +15,6 @@ export type FeatureState =
       nodes?: string[];
       edges?: string[];
     };
-
-export type FeatureDefinition = (
-  events: EventRegistry,
-  reducers: {
-    node: NodeReducerRegistry;
-    edge: EdgeReducerRegistry;
-  }
-) => symbol;
 
 export interface Feature {
   readonly id: symbol;

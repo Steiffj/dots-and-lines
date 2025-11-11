@@ -3,6 +3,7 @@ import type { Sigma } from "sigma";
 import type { DisplayData, NodeDisplayData } from "sigma/types";
 import type { DALEdgeAttrs, DALGraphAttrs, DALNodeAttrs } from "../dal-types";
 import type { PooledReducer } from "./types";
+import { FeatureActivityManager } from "../features/feature-activity-manager";
 
 export type NodeReducerRegistry = ReducerRegistry<
   DALNodeAttrs,
@@ -35,13 +36,43 @@ export class ReducerRegistry<
   #features: Map<PooledReducer<N, E, A, R, D>, symbol> = new Map();
   #pausedReducers: PooledReducer<N, E, A, R, D>[] = [];
   #pausedFeatures: symbol[] = [];
+  #activityMgr = new FeatureActivityManager();
+
+  configure(active: symbol, disabled: symbol) {
+    this.#activityMgr.configure([active, disabled]);
+  }
+
+  setActive(feature: symbol) {
+    this.#activityMgr.pushActive(feature);
+  }
+
+  setInactive(feature: symbol) {
+    this.#activityMgr.removeActive(feature);
+  }
+
+  isDisabled(reducer: PooledReducer<N, E, A, R, D>) {
+    const feat = this.#features.get(reducer);
+    if (!feat) {
+      throw new Error(
+        `Missing listener/feature mapping for feature ${String(
+          feat
+        )} in reducer registry`
+      );
+    }
+
+    return this.#activityMgr.isDisabled(feat);
+  }
+
+  private shouldSkip(reducer: PooledReducer<N, E, A, R, D>) {
+    return this.isPaused(reducer) || this.isDisabled(reducer);
+  }
 
   constructor(public readonly sigma: Sigma<N, E, A>) {}
 
   reducer = (key: string, data: D): R => {
     let pooled = this.pool.get(key) ?? {};
     for (const reducer of this.#reducers) {
-      if (this.isPaused(reducer)) {
+      if (this.shouldSkip(reducer)) {
         continue;
       }
       const displayData = reducer(key, data, pooled as R, this.sigma);

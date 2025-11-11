@@ -76,6 +76,10 @@ export class FeatHoverLegibility implements Feature, FeatureInit {
       nodes,
       edges,
     };
+
+    this.events.setActive(this.id);
+    this.nodeReducers.setActive(this.id);
+    this.edgeReducers.setActive(this.id);
     return { ...this.state };
   }
 
@@ -84,6 +88,10 @@ export class FeatHoverLegibility implements Feature, FeatureInit {
     this.state = {
       active: false,
     };
+
+    this.events.setInactive(this.id);
+    this.nodeReducers.setInactive(this.id);
+    this.edgeReducers.setInactive(this.id);
     return state;
   }
 
