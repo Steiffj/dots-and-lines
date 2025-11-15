@@ -47,6 +47,22 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
     }
   }
 
+  #activeNotificationCallbacks: ((
+    feat: symbol,
+    state?: FeatureState
+  ) => void)[] = [];
+  onActivityChange(recipient: (feat: symbol, state?: FeatureState) => void) {
+    if (!this.#activeNotificationCallbacks.includes(recipient)) {
+      this.#activeNotificationCallbacks.push(recipient);
+    }
+  }
+
+  private notify(state: FeatureState) {
+    for (const recipient of this.#activeNotificationCallbacks) {
+      recipient(this.id, state);
+    }
+  }
+
   start(dragging: string, sigma: DALSigma) {
     const g = sigma.getGraph();
     this.state = {
@@ -59,7 +75,9 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
     this.events.setActive(this.id);
     this.nodeReducers.setActive(this.id);
     this.edgeReducers.setActive(this.id);
-    return { ...this.state };
+    const state = { ...this.state };
+    this.notify(state);
+    return state;
   }
 
   stop() {
@@ -71,6 +89,7 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
     this.events.setInactive(this.id);
     this.nodeReducers.setInactive(this.id);
     this.edgeReducers.setInactive(this.id);
+    this.notify({ ...this.state });
     return state;
   }
 
@@ -109,10 +128,10 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
         return;
       }
 
-      if (sigma.getSetting("renderLabels")) {
-        originalSettings.renderLabels = true;
-        sigma.setSetting("renderLabels", false);
-      }
+      // if (sigma.getSetting("renderLabels")) {
+      //   originalSettings.renderLabels = true;
+      //   sigma.setSetting("renderLabels", false);
+      // }
 
       const pos = sigma.viewportToGraph(payload.event);
       g.setNodeAttribute(this.state.dragging, "x", pos.x);
@@ -142,13 +161,13 @@ export class FeatDragAndDrop implements Feature, FeatureInit {
       //   delete originalSettings.renderEdgeLabels;
       // }
 
-      if (
-        originalSettings.renderLabels !== undefined &&
-        sigma.getSetting("renderLabels") !== originalSettings.renderLabels
-      ) {
-        sigma.setSetting("renderLabels", originalSettings.renderLabels);
-        delete originalSettings.renderLabels;
-      }
+      // if (
+      //   originalSettings.renderLabels !== undefined &&
+      //   sigma.getSetting("renderLabels") !== originalSettings.renderLabels
+      // ) {
+      //   sigma.setSetting("renderLabels", originalSettings.renderLabels);
+      //   delete originalSettings.renderLabels;
+      // }
 
       // TODO consolidate rendering refreshes in the feature registry
       if (oldState.active && (oldState.nodes || oldState.edges)) {

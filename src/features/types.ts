@@ -20,6 +20,9 @@ export interface Feature {
   readonly id: symbol;
   readonly state: FeatureState;
   readonly active: boolean;
+  onActivityChange?: (
+    recipient: (feat: symbol, state?: FeatureState) => void
+  ) => void;
 }
 
 export interface FeatureInit {

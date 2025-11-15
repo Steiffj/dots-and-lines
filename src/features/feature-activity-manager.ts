@@ -1,6 +1,19 @@
 export class FeatureActivityManager {
   #active: symbol[] = [];
   #exclusive = new Map<symbol, symbol[]>();
+  /**
+   * This terribly named structure keeps track of reducers that are supposed to run once:
+   * - as a feature becomes active,
+   * - or directly after a feature becomes inactive.
+   *
+   * Note: a limitation with this approach is that a feature can only register a single before/after reducer function.
+   */
+  #runOncePending: {
+    [feat: symbol]: {
+      before: boolean;
+      after: boolean;
+    };
+  } = {};
 
   isDisabled(feature: symbol) {
     for (const active of this.#active) {
@@ -31,6 +44,32 @@ export class FeatureActivityManager {
 
   pushActive(feature: symbol) {
     this.#active.push(feature);
+    this.#runOncePending[feature] = {
+      before: true,
+      after: false,
+    };
+  }
+
+  consumePendingBefore(feature: symbol) {
+    const pending = this.#runOncePending[feature];
+    if (pending) {
+      const shouldRun = pending.before;
+      pending.before = false;
+      return shouldRun;
+    }
+
+    return false;
+  }
+
+  consumePendingAfter(feature: symbol) {
+    const pending = this.#runOncePending[feature];
+    if (pending) {
+      const shouldRun = pending.after;
+      pending.after = false;
+      return shouldRun;
+    }
+
+    return false;
   }
 
   popActive() {
