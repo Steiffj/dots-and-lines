@@ -1,0 +1,31 @@
+namespace Graph;
+
+table Key {
+  key:uint64;
+  raw:string;
+}
+
+table Node {
+  key:Key;
+  attributes:Attributes;
+}
+
+table Edge {
+  key:Key;
+  source:Key;
+  target:Key;
+  attributes:Attributes;
+  undirected:bool;
+}
+
+table Attributes {
+  raw:string;
+}
+
+table Graph {
+  attributes:Attributes;
+  nodes:[Node];
+  edges:[Edge];
+}
+
+root_type Graph;
