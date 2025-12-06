@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "public/wasm_exec.js"]
+  "include": ["src", "public/wasm_exec.js"],
 }
