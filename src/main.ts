@@ -3,8 +3,8 @@ import { setupColorSchemeToggle } from "./color-scheme/color-scheme-sync";
 import { PALETTE_HIGH_CONTRAST_CIRCLE } from "./color-scheme/palettes";
 import { createSupernode } from "./data";
 import { setupSigma } from "./sigma";
+import { flatbuffersTesting } from "./storage-engine/flatbuffers-testcase";
 import "./style.css";
-import { initOPFSWorker, initSQLiteWorker } from "./storage-engine/workers";
 
 export default (function init() {
   const stage = document.getElementById("stage");
@@ -22,10 +22,11 @@ export default (function init() {
     renderEdgeLabels: true,
   });
   setupColorSchemeToggle();
-  initSQLiteWorker();
-  const worker = initOPFSWorker();
-  worker.onmessage = (msg) => {
-    console.log(msg.data);
-  };
-  worker.postMessage("Hello, OPFS!");
+  // initSQLiteWorker();
+  // const worker = initOPFSWorker();
+  // worker.onmessage = (msg) => {
+  //   console.log(msg.data);
+  // };
+  // worker.postMessage("Hello, OPFS!");
+  flatbuffersTesting();
 })();

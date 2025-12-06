@@ -9,3 +9,15 @@ export function initOPFSWorker() {
     type: "module",
   });
 }
+
+export function initFlatbuffersWorker() {
+  console.debug("Initializing flatbuffers worker");
+  const worker = new Worker(
+    new URL("./flatbuffers.worker.js", import.meta.url),
+    {
+      type: "module",
+    }
+  );
+  console.debug("Finished initializing flatbuffers worker");
+  return worker;
+}

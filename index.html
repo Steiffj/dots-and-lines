@@ -5,12 +5,12 @@
   <meta charset="UTF-8" />
   <link href="src/style.css" rel="stylesheet">
   <script src="wasm_exec.js"></script>
-  <script>
+  <!-- <script>
     const go = new Go();
     WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
       go.run(result.instance);
     });
-  </script>
+  </script> -->
   <script defer type="module" src="src/main.ts"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dots and Lines</title>
