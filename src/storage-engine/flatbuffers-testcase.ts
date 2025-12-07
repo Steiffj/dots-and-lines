@@ -1,11 +1,11 @@
 import { ByteBuffer } from "flatbuffers";
+import { Graph, KeyIndex } from "../flatbuffers/gen/graph";
 import type {
   FlatBuffersWorkerRequest,
   FlatBuffersWorkerResponse,
-} from "./flatbuffers.worker";
+} from "./test-cases/types";
 import { graphologyCBOR } from "./grapohlogy-cbor";
 import { initFlatbuffersWorker } from "./workers";
-import { Graph, KeyIndex } from "../flatbuffers/gen/graph";
 
 export function flatbuffersTesting() {
   graphologyCBOR();
@@ -74,8 +74,7 @@ export function flatbuffersTesting() {
       "flatbuf-process-end"
     );
     console.log("FlatBuffers processing time", flatbufProcessPerf);
-
-    console.log(keys);
+    console.log(`Key index length: ${keys.size}`);
   };
 
   /**
