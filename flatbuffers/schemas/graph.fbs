@@ -1,8 +1,12 @@
 namespace Graph;
 
 table Key {
-  key:uint64;
+  key:int64;
   raw:string;
+}
+
+table KeyIndex {
+  index:[Key];
 }
 
 table Node {

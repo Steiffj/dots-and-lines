@@ -6,4 +6,5 @@ export { Attributes } from './graph/attributes.js';
 export { Edge } from './graph/edge.js';
 export { Graph } from './graph/graph.js';
 export { Key } from './graph/key.js';
+export { KeyIndex } from './graph/key-index.js';
 export { Node } from './graph/node.js';

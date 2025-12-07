@@ -1,54 +1,89 @@
-import type { FlatBuffersWorkerRequest } from "./flatbuffers.worker";
+import { ByteBuffer } from "flatbuffers";
+import type {
+  FlatBuffersWorkerRequest,
+  FlatBuffersWorkerResponse,
+} from "./flatbuffers.worker";
+import { graphologyCBOR } from "./grapohlogy-cbor";
 import { initFlatbuffersWorker } from "./workers";
+import { Graph, KeyIndex } from "../flatbuffers/gen/graph";
 
 export function flatbuffersTesting() {
+  graphologyCBOR();
+
   const worker = initFlatbuffersWorker();
   worker.onerror = (e) => {
     console.error(e);
   };
 
   worker.onmessage = (e) => {
-    // console.log("Received flatbuffer data on main thread");
-    performance.mark("flatbuf-received");
-    console.log(e.data);
-    performance.mark("flatbuf-deserialized");
+    console.log("UI postMessage event received");
+    performance.mark("postmessage-received");
+    const data: FlatBuffersWorkerResponse = e.data;
+    console.log(data);
+    performance.mark("postmessage-deserialized");
     const perf = performance.measure(
       "postmessage-duration-ui",
-      "flatbuf-received",
-      "flatbuf-deserialized"
+      "postmessage-received",
+      "postmessage-deserialized"
     );
-    console.log("UI postmessage deserialization time", perf);
-  };
+    console.log("UI postMessage deserialization time", perf);
 
-  const testCount = 10;
-  let interval: number | null = null;
-  const orders = [100, 1000, 10000, 100000, 1000000];
-  let run = 1;
-
-  const sendTestCase = (order: number) => {
-    const req: FlatBuffersWorkerRequest = {
-      type: "flatbuf-transfer",
-      order,
-    };
-    worker.postMessage(req);
-  };
-
-  const testCase = () => {
-    if (run === testCount && typeof interval === "number") {
-      clearInterval(interval);
+    if (data.type !== "flatbuf-transfer") {
+      return;
     }
 
-    const i = run % orders.length;
-    run++;
-    const req: FlatBuffersWorkerRequest = {
-      type: "flatbuf-transfer",
-      order: orders[i],
-    };
-    worker.postMessage(req);
+    // Test FlatBuffers parsing, if relevant
+    console.log("Parsing FlatBuffers in UI");
+    performance.mark("flatbuf-parse-start");
+    const bytes = data.data as { graph: Uint8Array; index: Uint8Array };
+    const graphBuf = new ByteBuffer(bytes.graph);
+    const indexBuf = new ByteBuffer(bytes.index);
+    const graph = Graph.getRootAsGraph(graphBuf);
+    const index = KeyIndex.getRootAsKeyIndex(indexBuf);
+    performance.mark("flatbuf-parse-end");
+    const flatbufPerf = performance.measure(
+      "flatbuf-parse",
+      "flatbuf-parse-start",
+      "flatbuf-parse-end"
+    );
+    console.log("FlatBuffers parsing time", flatbufPerf);
+
+    // Measure performance of loading keys into JS map from FlatBuffers (this is the slow part)
+    performance.mark("flatbuf-process-start");
+    const keys = new Map<bigint, string>();
+    for (let i = 0; i < index.indexLength(); i++) {
+      const entry = index.index(i);
+      if (!entry) {
+        console.error(
+          `Missing key index value for position ${i} with length ${index.indexLength()}`
+        );
+        continue;
+      }
+
+      const keyStr = entry.raw();
+      if (!keyStr) {
+        console.error(`Missing key string ("raw") for position ${i}`);
+        continue;
+      }
+      keys.set(entry.key(), keyStr);
+    }
+    performance.mark("flatbuf-process-end");
+    const flatbufProcessPerf = performance.measure(
+      "flatbuf-process",
+      "flatbuf-process-start",
+      "flatbuf-process-end"
+    );
+    console.log("FlatBuffers processing time", flatbufProcessPerf);
+
+    console.log(keys);
   };
 
-  // testCase();
-  sendTestCase(1_000_000);
-  // sendTestCase(100_000);
-  // interval = setInterval(testCase, 4000);
+  /**
+   * Edit here to run different test cases.
+   */
+  const test: FlatBuffersWorkerRequest = {
+    type: "flatbuf-transfer",
+    order: 1_000_000,
+  };
+  worker.postMessage(test);
 }

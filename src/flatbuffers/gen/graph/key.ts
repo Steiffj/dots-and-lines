@@ -24,7 +24,7 @@ static getSizePrefixedRootAsKey(bb:flatbuffers.ByteBuffer, obj?:Key):Key {
 
 key():bigint {
   const offset = this.bb!.__offset(this.bb_pos, 4);
-  return offset ? this.bb!.readUint64(this.bb_pos + offset) : BigInt('0');
+  return offset ? this.bb!.readInt64(this.bb_pos + offset) : BigInt('0');
 }
 
 raw():string|null
