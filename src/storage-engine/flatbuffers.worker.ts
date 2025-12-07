@@ -31,6 +31,8 @@ onmessage = (e) => {
     } else {
       throw new Error(`Unsupported message type ${msg.type}`);
     }
+    performance.clearMarks();
+    performance.clearMeasures();
   } catch (err) {
     console.error("Error in flatbuffers worker", err);
     postMessage(err);
