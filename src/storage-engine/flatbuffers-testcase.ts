@@ -55,7 +55,7 @@ export function flatbuffersTesting() {
     // Measure performance of loading keys into JS map from FlatBuffers (this is the slow part)
     performance.mark("flatbuf-process-start");
     let keys: Map<bigint, string>;
-    chunkFlatBufferRequestProcessingInterval(index, 505).then(
+    chunkFlatBufferRequestProcessingInterval(index, 1002).then(
       (k) => {
         keys = k;
         performance.mark("flatbuf-process-end");
