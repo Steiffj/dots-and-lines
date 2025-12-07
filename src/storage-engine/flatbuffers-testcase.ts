@@ -1,7 +1,10 @@
 import { ByteBuffer } from "flatbuffers";
 import { Graph, KeyIndex } from "../flatbuffers/gen/graph";
 import { graphologyCBOR } from "./grapohlogy-cbor";
-import { chunkFlatBufferProcessing } from "./test-cases/flatbuf-chunking";
+import {
+  chunkFlatBufferProcessing,
+  chunkFlatBufferRequestProcessingInterval,
+} from "./test-cases/flatbuf-chunking";
 import type {
   FlatBuffersWorkerRequest,
   FlatBuffersWorkerResponse,
@@ -52,7 +55,7 @@ export function flatbuffersTesting() {
     // Measure performance of loading keys into JS map from FlatBuffers (this is the slow part)
     performance.mark("flatbuf-process-start");
     let keys: Map<bigint, string>;
-    chunkFlatBufferProcessing(index, 1002).then(
+    chunkFlatBufferRequestProcessingInterval(index, 505).then(
       (k) => {
         keys = k;
         performance.mark("flatbuf-process-end");
@@ -75,7 +78,7 @@ export function flatbuffersTesting() {
    */
   const test: FlatBuffersWorkerRequest = {
     type: "flatbuf-transfer",
-    order: 2_000_000,
+    order: 1_000_000,
   };
   worker.postMessage(test);
 }
