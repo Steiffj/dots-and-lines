@@ -1,10 +1,11 @@
 import { ByteBuffer } from "flatbuffers";
 import { Graph, KeyIndex } from "../flatbuffers/gen/graph";
+import { graphologyCBOR } from "./grapohlogy-cbor";
+import { chunkFlatBufferProcessing } from "./test-cases/flatbuf-chunking";
 import type {
   FlatBuffersWorkerRequest,
   FlatBuffersWorkerResponse,
 } from "./test-cases/types";
-import { graphologyCBOR } from "./grapohlogy-cbor";
 import { initFlatbuffersWorker } from "./workers";
 
 export function flatbuffersTesting() {
@@ -50,31 +51,23 @@ export function flatbuffersTesting() {
 
     // Measure performance of loading keys into JS map from FlatBuffers (this is the slow part)
     performance.mark("flatbuf-process-start");
-    const keys = new Map<bigint, string>();
-    for (let i = 0; i < index.indexLength(); i++) {
-      const entry = index.index(i);
-      if (!entry) {
-        console.error(
-          `Missing key index value for position ${i} with length ${index.indexLength()}`
+    let keys: Map<bigint, string>;
+    chunkFlatBufferProcessing(index, 1002).then(
+      (k) => {
+        keys = k;
+        performance.mark("flatbuf-process-end");
+        const flatbufProcessPerf = performance.measure(
+          "flatbuf-process",
+          "flatbuf-process-start",
+          "flatbuf-process-end"
         );
-        continue;
+        console.log("FlatBuffers processing time", flatbufProcessPerf);
+        console.log(`Key index length: ${keys.size}`);
+      },
+      (reason) => {
+        console.error("Failed to chunk process key index FlatBuffer", reason);
       }
-
-      const keyStr = entry.raw();
-      if (!keyStr) {
-        console.error(`Missing key string ("raw") for position ${i}`);
-        continue;
-      }
-      keys.set(entry.key(), keyStr);
-    }
-    performance.mark("flatbuf-process-end");
-    const flatbufProcessPerf = performance.measure(
-      "flatbuf-process",
-      "flatbuf-process-start",
-      "flatbuf-process-end"
     );
-    console.log("FlatBuffers processing time", flatbufProcessPerf);
-    console.log(`Key index length: ${keys.size}`);
   };
 
   /**
@@ -82,7 +75,7 @@ export function flatbuffersTesting() {
    */
   const test: FlatBuffersWorkerRequest = {
     type: "flatbuf-transfer",
-    order: 1_000_000,
+    order: 2_000_000,
   };
   worker.postMessage(test);
 }
