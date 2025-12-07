@@ -23,7 +23,6 @@ export function flatbuffersTesting() {
     console.log("UI postMessage event received");
     performance.mark("postmessage-received");
     const data: FlatBuffersWorkerResponse = e.data;
-    console.log(data);
     performance.mark("postmessage-deserialized");
     const perf = performance.measure(
       "postmessage-duration-ui",

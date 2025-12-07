@@ -2,7 +2,8 @@ export type FlatBuffersWorkerMessageType =
   | "json"
   | "flatbuf-copy"
   | "flatbuf-transfer"
-  | "cbor";
+  | "cbor"
+  | "sink";
 
 export type FlatBuffersWorkerRequest = {
   type: FlatBuffersWorkerMessageType;

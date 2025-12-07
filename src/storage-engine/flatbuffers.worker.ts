@@ -17,6 +17,7 @@ const handlers: {
   "flatbuf-transfer": flatBufTransfer,
   json: jsonCopy,
   cbor: cborTransfer,
+  sink: () => {},
 };
 
 onmessage = (e) => {
